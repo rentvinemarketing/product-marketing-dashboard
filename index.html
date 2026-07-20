@@ -2,11 +2,10 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Rentvine Marketing Status Dashboard</title>
+<title>Product Marketing & Customer Comms Dashboard</title>
 <style>
-  /* Manrope = titles/subtitles/buttons per brand guide; system sans stands in for Hando (body face). No external font requests, so this renders without network access. */
-
   :root{
+    color-scheme: light;
     --vine:#00A54F;
     --dew:#CAF5DF;
     --blue:#167FE1;
@@ -26,12 +25,13 @@
   }
 
   *{box-sizing:border-box;}
+  html,body{background:var(--paper);}
   body{
     margin:0;
-    font-family:-apple-system,'Segoe UI',Roboto,sans-serif; /* body face — see Hando note above */
+    font-family:-apple-system,'Segoe UI',Roboto,sans-serif;
     background:var(--paper);
     color:var(--night);
-    padding:32px 40px 60px;
+    padding:24px 28px 48px;
   }
   h1,h2,h3,.section-title,.kpi .label,thead th{font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-weight:700;}
 
@@ -39,42 +39,34 @@
     display:flex;
     justify-content:space-between;
     align-items:flex-end;
-    margin-bottom:28px;
+    margin-bottom:24px;
     flex-wrap:wrap;
     gap:16px;
   }
   .wordmark{
     display:flex;
     align-items:center;
-    gap:6px;
-    font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-weight:700;
-    font-weight:800;
-    font-size:13px;
-    color:var(--vine);
-    margin-bottom:6px;
-    letter-spacing:.01em;
+    margin-bottom:10px;
   }
-  .wordmark .dot{
-    width:8px;height:8px;border-radius:2px;
-    background:var(--vine);
-    display:inline-block;
-    transform:rotate(45deg);
+  .wordmark svg{
+    height:28px;
+    width:auto;
+    display:block;
   }
   .header h1{
-    font-size:26px;
+    font-size:24px;
     font-weight:800;
     margin:0 0 4px;
-    font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-weight:700;
   }
   .header p{
     margin:0;
     color:var(--stone);
-    font-size:14px;
+    font-size:13.5px;
   }
   .sync-badge{
     background:var(--night);
     color:var(--white);
-    font-size:12px;
+    font-size:11.5px;
     font-weight:600;
     padding:6px 12px;
     border-radius:20px;
@@ -85,21 +77,21 @@
     display:grid;
     grid-template-columns:repeat(4,1fr);
     gap:14px;
-    margin-bottom:32px;
+    margin-bottom:28px;
   }
   .kpi{
     background:var(--white);
     border-radius:14px;
-    padding:18px 20px;
+    padding:16px 18px;
     border:1px solid #e4e4e4;
   }
   .kpi .num{
-    font-size:28px;
+    font-size:26px;
     font-weight:800;
     line-height:1;
   }
   .kpi .label{
-    font-size:13px;
+    font-size:12.5px;
     color:var(--stone);
     margin-top:6px;
     font-weight:600;
@@ -112,25 +104,25 @@
   .section{
     background:var(--white);
     border-radius:16px;
-    padding:24px 26px 28px;
-    margin-bottom:28px;
+    padding:22px 24px 26px;
+    margin-bottom:24px;
     border:1px solid #e4e4e4;
   }
   .section-title{
     display:flex;
     align-items:center;
     justify-content:space-between;
-    margin-bottom:16px;
+    margin-bottom:14px;
     flex-wrap:wrap;
     gap:10px;
   }
   .section-title h2{
-    font-size:18px;
+    font-size:17px;
     margin:0;
     font-weight:800;
   }
   .section-title .sub{
-    font-size:13px;
+    font-size:12.5px;
     color:var(--stone);
     margin-top:2px;
   }
@@ -145,13 +137,11 @@
     background:var(--white);
     color:var(--smoke);
     font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-weight:700;
-    font-size:12px;
-    font-weight:600;
+    font-size:11.5px;
     padding:6px 12px;
     border-radius:20px;
     cursor:pointer;
     transition:all .15s;
-    text-transform:lowercase;
   }
   .filter-btn:hover{border-color:var(--blue);}
   .filter-btn.active{
@@ -163,11 +153,11 @@
   table{
     width:100%;
     border-collapse:collapse;
-    font-size:13.5px;
+    font-size:13px;
   }
   thead th{
     text-align:left;
-    font-size:11px;
+    font-size:10.5px;
     text-transform:uppercase;
     letter-spacing:.03em;
     color:var(--stone);
@@ -180,11 +170,10 @@
   thead th:hover{color:var(--night);}
   tbody tr{
     border-bottom:1px solid var(--paper);
-    transition:background .1s;
   }
   tbody tr:hover{background:#fafafa;}
   tbody td{
-    padding:10px;
+    padding:9px 10px;
     vertical-align:middle;
   }
   .item-name{font-weight:700;}
@@ -202,19 +191,12 @@
 
   .pill{
     display:inline-block;
-    font-size:11.5px;
+    font-size:11px;
     font-weight:700;
     padding:4px 10px;
     border-radius:20px;
     white-space:nowrap;
   }
-  .status-openbeta{background:var(--vine);color:var(--white);}
-  .status-closedbeta{background:var(--blue);color:var(--white);}
-  .status-ontrack{background:var(--honey);color:var(--night);}
-  .status-atrisk{background:var(--lava);color:var(--white);}
-  .status-research{background:var(--grape);color:var(--white);}
-  .status-notstarted{background:var(--grey);color:var(--white);}
-
   .area-chip{
     font-size:11px;
     font-weight:700;
@@ -224,7 +206,6 @@
     color:#0a6b34;
   }
 
-  /* Marketing readiness cards */
   .readiness-grid{
     display:grid;
     grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
@@ -234,11 +215,6 @@
     border:1px solid #e4e4e4;
     border-radius:12px;
     padding:14px 16px;
-    transition:box-shadow .15s, border-color .15s;
-  }
-  .rcard:hover{
-    box-shadow:0 4px 14px rgba(0,0,0,.06);
-    border-color:var(--blue);
   }
   .rcard.highlight{
     border-color:var(--vine);
@@ -250,8 +226,8 @@
     align-items:flex-start;
     margin-bottom:8px;
   }
-  .rcard-name{font-weight:800;font-size:14px;}
-  .rcard-pct{font-weight:800;font-size:14px;color:var(--vine);}
+  .rcard-name{font-weight:800;font-size:13.5px;}
+  .rcard-pct{font-weight:800;font-size:13.5px;color:var(--vine);}
   .progress-track{
     height:8px;
     background:var(--paper);
@@ -262,7 +238,7 @@
   }
   .seg{height:100%;}
   .rcard-note{
-    font-size:12px;
+    font-size:11.5px;
     color:var(--stone);
     line-height:1.4;
   }
@@ -270,21 +246,23 @@
     margin-top:10px;
     padding-top:10px;
     border-top:1px solid var(--paper);
-    display:none;
   }
-  .rcard.open .rcard-detail{display:block;}
   .task-row{
     display:flex;
     justify-content:space-between;
     align-items:center;
+    gap:8px;
     padding:4px 0;
-    font-size:12.5px;
+    font-size:12px;
   }
+  .task-row span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
   .task-status{
     font-size:10px;
     font-weight:800;
     padding:2px 7px;
     border-radius:10px;
+    white-space:nowrap;
+    flex-shrink:0;
   }
   .ts-complete{background:var(--vine);color:#fff;}
   .ts-review{background:var(--grape);color:#fff;}
@@ -296,15 +274,15 @@
     display:flex;
     gap:16px;
     flex-wrap:wrap;
-    font-size:12px;
+    font-size:11.5px;
     color:var(--stone);
     margin-top:14px;
   }
   .legend span{display:flex;align-items:center;gap:6px;}
-  .dot{width:9px;height:9px;border-radius:50%;display:inline-block;}
+  .ldot{width:9px;height:9px;border-radius:50%;display:inline-block;}
 
   .footnote{
-    font-size:12px;
+    font-size:11.5px;
     color:var(--stone);
     margin-top:6px;
   }
@@ -312,21 +290,19 @@
   .tab-nav{
     display:flex;
     gap:6px;
-    margin-bottom:24px;
+    margin-bottom:20px;
     border-bottom:2px solid #e4e4e4;
   }
   .tab-btn{
     font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-weight:700;
-    font-size:14px;
-    font-weight:700;
+    font-size:13.5px;
     color:var(--stone);
     background:none;
     border:none;
-    padding:10px 18px;
+    padding:9px 16px;
     cursor:pointer;
     border-bottom:3px solid transparent;
     margin-bottom:-2px;
-    text-transform:lowercase;
   }
   .tab-btn:hover{color:var(--night);}
   .tab-btn.active{
@@ -335,42 +311,93 @@
   }
   .tab-panel{display:none;}
   .tab-panel.active{display:block;}
+
+  .subtab-nav{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+    margin-bottom:20px;
+  }
+  .subtab-btn{
+    font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-weight:700;
+    font-size:12.5px;
+    color:var(--smoke);
+    background:var(--white);
+    border:1px solid #ddd;
+    padding:7px 14px;
+    border-radius:20px;
+    cursor:pointer;
+    transition:all .15s;
+  }
+  .subtab-btn:hover{border-color:var(--blue);}
+  .subtab-btn.active{
+    background:var(--vine);
+    color:var(--white);
+    border-color:var(--vine);
+  }
+  .subtab-panel{display:none;}
+  .subtab-panel.active{display:block;}
   .board-link{
-    font-size:12px;
+    font-size:11.5px;
     color:var(--blue);
     text-decoration:none;
     font-weight:600;
   }
   .board-link:hover{text-decoration:underline;}
+
+  .empty-state{
+    text-align:center;
+    padding:30px 10px;
+    color:var(--stone);
+    font-size:13px;
+  }
 </style>
 </head>
 <body>
 
 <div class="header">
   <div>
-    <div class="wordmark"><span class="dot"></span>rentvine</div>
-    <h1>Product Marketing Status Dashboard</h1>
-    <p>Product roadmap + release tier tracking, pulled from monday.com</p>
+    <div class="wordmark">
+      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 844.647 198" role="img" aria-label="Rentvine logo">
+        <path style="stroke:none;fill-rule:nonzero;fill:#111111;fill-opacity:1;" d="M 177.710938 161.5625 C 176.609375 161.5625 175.710938 160.667969 175.710938 159.5625 L 175.710938 73.523438 C 175.710938 68.675781 179.648438 64.730469 184.488281 64.730469 L 193.683594 64.730469 C 194.789062 64.730469 195.683594 65.628906 195.683594 66.730469 L 195.683594 79.367188 C 195.6875 79.378906 195.734375 79.40625 195.789062 79.40625 C 199.402344 74.734375 203.796875 71.144531 208.921875 68.714844 C 214.707031 65.964844 220.84375 64.5 227.15625 64.359375 L 227.160156 64.359375 C 228.292969 64.359375 229.179688 65.25 229.179688 66.347656 L 229.179688 75.113281 C 229.179688 79.515625 225.847656 83.273438 221.433594 83.851562 C 218.3125 84.25 215.25 84.949219 212.320312 85.933594 C 207.414062 87.570312 203.363281 90.273438 200.28125 93.96875 C 197.234375 97.625 195.6875 102.675781 195.6875 108.976562 L 195.6875 152.769531 C 195.6875 157.617188 191.753906 161.5625 186.914062 161.5625 Z M 177.710938 161.5625 "/>
+        <path style="stroke:none;fill-rule:nonzero;fill:#111111;fill-opacity:1;" d="M 304.492188 101.714844 C 304.015625 97.339844 302.734375 93.546875 300.671875 90.464844 C 298.441406 87.144531 295.570312 84.539062 292.140625 82.730469 C 288.699219 80.917969 284.8125 80 280.589844 80 C 276.402344 80 272.453125 80.871094 268.515625 82.660156 C 264.648438 84.421875 261.371094 87.03125 258.773438 90.421875 C 256.5 93.386719 254.84375 98.878906 254.316406 101.714844 Z M 280.773438 163.839844 C 271.425781 163.839844 263.039062 161.652344 255.851562 157.34375 C 248.664062 153.035156 242.9375 147.003906 238.832031 139.417969 C 234.738281 131.847656 232.660156 123.007812 232.660156 113.148438 C 232.660156 103.289062 234.738281 94.453125 238.832031 86.875 C 242.941406 79.292969 248.699219 73.261719 255.949219 68.949219 C 263.199219 64.640625 271.613281 62.453125 280.964844 62.453125 C 289.828125 62.453125 297.71875 64.714844 304.414062 69.167969 C 311.101562 73.617188 316.410156 80.007812 320.191406 88.164062 C 323.839844 96.046875 325.746094 105.390625 325.859375 115.929688 C 325.863281 116.464844 325.660156 116.96875 325.28125 117.351562 C 324.90625 117.730469 324.402344 117.941406 323.863281 117.941406 L 253.082031 117.941406 C 253.855469 126.472656 256.871094 133.265625 262.0625 138.117188 C 267.453125 143.160156 274.195312 145.71875 282.101562 145.71875 C 294.40625 145.71875 299.296875 137.710938 301.570312 134.269531 C 303.109375 131.933594 304.328125 130.089844 308.769531 130.089844 L 320.222656 130.089844 C 320.816406 130.089844 321.375 130.347656 321.746094 130.800781 C 322.105469 131.238281 322.246094 131.808594 322.136719 132.363281 C 320.910156 138.578125 314.671875 148.199219 311.082031 151.835938 C 311.082031 151.835938 307.179688 156.066406 301.308594 159.003906 C 295.152344 162.085938 287.683594 163.839844 280.773438 163.839844 M 280.773438 163.839844 Z M 280.773438 163.839844 "/>
+        <path style="stroke:none;fill-rule:nonzero;fill:#111111;fill-opacity:1;" d="M 343.660156 161.5625 C 342.554688 161.5625 341.660156 160.664062 341.660156 159.5625 L 341.660156 73.527344 C 341.660156 68.675781 345.597656 64.730469 350.4375 64.730469 L 359.257812 64.730469 C 360.359375 64.730469 361.257812 65.628906 361.257812 66.730469 L 361.257812 76.007812 C 361.261719 76.015625 361.3125 76.050781 361.378906 76.050781 C 364.335938 72.160156 367.878906 69.042969 371.976562 66.75 C 377.082031 63.898438 383.007812 62.453125 389.585938 62.453125 C 397.164062 62.453125 403.851562 64.027344 409.464844 67.132812 C 415.109375 70.253906 419.519531 75.160156 422.566406 81.710938 C 425.578125 88.207031 427.105469 96.804688 427.105469 107.265625 L 427.105469 152.761719 C 427.105469 157.613281 423.171875 161.558594 418.332031 161.558594 L 409.132812 161.558594 C 408.03125 161.558594 407.132812 160.660156 407.132812 159.558594 L 407.132812 112.007812 C 407.132812 103.59375 406.175781 97.121094 404.285156 92.773438 C 402.429688 88.523438 399.84375 85.53125 396.609375 83.878906 C 393.289062 82.183594 389.386719 81.265625 385.015625 81.140625 C 377.707031 81.140625 371.921875 83.757812 367.855469 88.917969 C 363.730469 94.148438 361.636719 101.664062 361.636719 111.25 L 361.636719 152.761719 C 361.636719 157.613281 357.703125 161.558594 352.863281 161.558594 L 343.664062 161.5625 Z M 343.660156 161.5625 "/>
+        <path style="stroke:none;fill-rule:nonzero;fill:#111111;fill-opacity:1;" d="M 472.546875 163.839844 C 462.863281 163.839844 455.25 161.289062 449.914062 156.261719 C 444.558594 151.230469 441.84375 143.933594 441.84375 134.578125 L 441.84375 43.941406 C 441.84375 39.09375 445.78125 35.148438 450.617188 35.148438 L 459.816406 35.148438 C 460.917969 35.148438 461.816406 36.042969 461.816406 37.144531 L 461.816406 64.734375 L 486.6875 64.734375 C 487.789062 64.734375 488.6875 65.632812 488.6875 66.734375 L 488.6875 73.492188 C 488.6875 78.339844 484.746094 82.285156 479.90625 82.285156 L 461.816406 82.285156 L 461.816406 131.925781 C 461.816406 136.324219 462.902344 139.699219 465.042969 141.953125 C 467.171875 144.203125 470.335938 145.34375 474.441406 145.34375 L 486.6875 145.34375 C 487.789062 145.34375 488.6875 146.238281 488.6875 147.339844 L 488.6875 151.632812 C 488.6875 156.640625 486.285156 160.410156 481.921875 162.242188 C 478.527344 163.671875 474.949219 163.839844 472.550781 163.839844 Z M 472.546875 163.839844 "/>
+        <path style="stroke:none;fill-rule:nonzero;fill:#111111;fill-opacity:1;" d="M 538.265625 161.5625 C 537.257812 161.5625 536.355469 160.960938 535.960938 160.035156 L 499.910156 74.054688 C 498.472656 70.621094 499.148438 68.433594 499.964844 67.203125 C 501.023438 65.613281 502.894531 64.734375 505.238281 64.730469 L 515.589844 64.730469 C 516.410156 64.730469 517.136719 65.21875 517.441406 65.980469 L 546.34375 137.222656 L 573.355469 70.230469 C 574.699219 66.890625 577.894531 64.730469 581.496094 64.730469 L 593.480469 64.730469 C 594.152344 64.730469 594.773438 65.0625 595.144531 65.621094 C 595.515625 66.179688 595.585938 66.878906 595.328125 67.5 L 558.355469 156.15625 C 556.980469 159.441406 553.800781 161.5625 550.25 161.5625 Z M 538.265625 161.5625 "/>
+        <path style="stroke:none;fill-rule:nonzero;fill:#111111;fill-opacity:1;" d="M 611.117188 161.5625 C 610.015625 161.5625 609.117188 160.664062 609.117188 159.5625 L 609.117188 73.523438 C 609.117188 68.675781 613.054688 64.730469 617.894531 64.730469 L 627.09375 64.730469 C 628.195312 64.730469 629.089844 65.628906 629.089844 66.730469 L 629.089844 152.769531 C 629.089844 157.617188 625.15625 161.5625 620.316406 161.5625 Z M 611.117188 161.5625 "/>
+        <path style="stroke:none;fill-rule:nonzero;fill:#111111;fill-opacity:1;" d="M 611.117188 55.160156 C 610.015625 55.160156 609.117188 54.265625 609.117188 53.160156 L 609.117188 42.816406 C 609.117188 38.582031 612.554688 35.140625 616.777344 35.140625 L 627.097656 35.140625 C 628.199219 35.140625 629.097656 36.039062 629.097656 37.140625 L 629.097656 47.488281 C 629.097656 51.71875 625.660156 55.160156 621.4375 55.160156 Z M 611.117188 55.160156 "/>
+        <path style="stroke:none;fill-rule:nonzero;fill:#111111;fill-opacity:1;" d="M 647.828125 161.558594 C 646.726562 161.558594 645.828125 160.664062 645.828125 159.5625 L 645.828125 73.527344 C 645.828125 68.675781 649.765625 64.730469 654.605469 64.730469 L 663.425781 64.730469 C 664.53125 64.730469 665.425781 65.628906 665.425781 66.730469 L 665.425781 76.007812 C 665.429688 76.015625 665.484375 76.050781 665.550781 76.050781 C 668.507812 72.160156 672.046875 69.042969 676.144531 66.75 C 681.253906 63.898438 687.175781 62.453125 693.753906 62.453125 C 701.335938 62.453125 708.023438 64.027344 713.632812 67.132812 C 719.28125 70.257812 723.691406 75.160156 726.734375 81.710938 C 729.75 88.207031 731.277344 96.804688 731.277344 107.265625 L 731.277344 152.761719 C 731.277344 157.613281 727.339844 161.558594 722.5 161.558594 L 713.304688 161.558594 C 712.199219 161.558594 711.304688 160.660156 711.304688 159.558594 L 711.304688 112.007812 C 711.304688 103.59375 710.347656 97.121094 708.453125 92.773438 C 706.597656 88.523438 704.015625 85.53125 700.777344 83.878906 C 697.457031 82.183594 693.558594 81.265625 689.1875 81.140625 C 681.875 81.140625 676.09375 83.757812 672.023438 88.917969 C 667.902344 94.148438 665.808594 101.664062 665.808594 111.25 L 665.808594 152.761719 C 665.808594 157.613281 661.871094 161.558594 657.03125 161.558594 Z M 647.828125 161.558594 "/>
+        <path style="stroke:none;fill-rule:nonzero;fill:#111111;fill-opacity:1;" d="M 814.929688 101.714844 C 814.453125 97.339844 813.171875 93.546875 811.109375 90.464844 C 808.878906 87.144531 806.007812 84.539062 802.578125 82.730469 C 799.140625 80.917969 795.253906 80 791.027344 80 C 786.839844 80 782.890625 80.871094 778.953125 82.660156 C 775.085938 84.421875 771.808594 87.03125 769.214844 90.421875 C 766.9375 93.386719 765.28125 98.878906 764.753906 101.714844 Z M 791.214844 163.839844 C 781.863281 163.839844 773.480469 161.652344 766.292969 157.34375 C 759.101562 153.035156 753.378906 147.003906 749.273438 139.417969 C 745.175781 131.847656 743.097656 123.007812 743.097656 113.148438 C 743.097656 103.289062 745.175781 94.453125 749.273438 86.875 C 753.378906 79.292969 759.136719 73.261719 766.386719 68.949219 C 773.636719 64.640625 782.054688 62.453125 791.402344 62.453125 C 800.269531 62.453125 808.15625 64.714844 814.855469 69.167969 C 821.539062 73.617188 826.847656 80.007812 830.628906 88.164062 C 834.277344 96.046875 836.1875 105.390625 836.296875 115.929688 C 836.300781 116.464844 836.097656 116.96875 835.722656 117.351562 C 835.34375 117.730469 834.839844 117.941406 834.304688 117.941406 L 763.519531 117.941406 C 764.292969 126.472656 767.308594 133.265625 772.5 138.117188 C 777.890625 143.160156 784.632812 145.71875 792.539062 145.71875 C 804.84375 145.71875 809.734375 137.710938 812.007812 134.269531 C 813.546875 131.933594 814.765625 130.089844 819.210938 130.089844 L 830.660156 130.089844 C 831.257812 130.089844 831.8125 130.347656 832.183594 130.800781 C 832.542969 131.238281 832.6875 131.808594 832.574219 132.363281 C 831.351562 138.578125 825.109375 148.199219 821.523438 151.835938 C 821.523438 151.835938 817.617188 156.066406 811.746094 159.003906 C 805.589844 162.085938 798.121094 163.839844 791.214844 163.839844 M 791.214844 163.839844 Z M 791.214844 163.839844 "/>
+        <path style="stroke:none;fill-rule:nonzero;fill:#00A54F;fill-opacity:1;" d="M 68.636719 8.039062 L 123.523438 62.921875 C 127.207031 66.609375 129.28125 71.609375 129.28125 76.820312 L 129.28125 129.320312 L 68.636719 68.679688 Z M 68.636719 8.039062 "/>
+        <path style="stroke:none;fill-rule:nonzero;fill:#00A54F;fill-opacity:1;" d="M 68.636719 68.679688 L 13.753906 123.5625 C 10.066406 127.25 7.996094 132.25 7.996094 137.460938 L 7.996094 189.960938 L 62.882812 135.078125 C 66.566406 131.390625 68.636719 126.390625 68.636719 121.179688 Z M 68.636719 68.679688 "/>
+      </svg>
+    </div>
+    <h1>Product Marketing & Customer Comms Dashboard</h1>
   </div>
-  <div class="sync-badge">Synced from monday.com</div>
+  <div class="sync-badge" id="syncBadge">Snapshot &middot; Jul 20, 2026</div>
 </div>
-
-<div class="kpi-row" id="kpiRow"></div>
 
 <div class="tab-nav">
-  <button class="tab-btn active" data-tab="overview">overview gtm tracker</button>
-  <button class="tab-btn" data-tab="tier1">release tier 1</button>
-  <button class="tab-btn" data-tab="tier2">release tier 2</button>
-  <button class="tab-btn" data-tab="tier3">release tier 3</button>
+  <button class="tab-btn active" data-tab="overview">product overview</button>
+  <button class="tab-btn" data-tab="comms">customer comms</button>
 </div>
 
-<!-- TAB: OVERVIEW -->
 <div class="tab-panel active" id="tab-overview">
+
+<div class="subtab-nav">
+  <button class="subtab-btn active" data-subtab="gtm">gtm tracker</button>
+  <button class="subtab-btn" data-subtab="tier1">release tier 1</button>
+  <button class="subtab-btn" data-subtab="tier2">release tier 2</button>
+  <button class="subtab-btn" data-subtab="tier3">release tier 3</button>
+</div>
+
+<div class="subtab-panel active" id="subtab-gtm">
+<div class="kpi-row" id="kpiRow"></div>
 <div class="section">
   <div class="section-title">
     <div>
       <h2>Overview GTM tracker</h2>
-      <div class="sub">28 initiatives across T1 – Major, T2 – Medium, and T3 – Minor · <a class="board-link" href="https://rentvine.monday.com/boards/18421987602" target="_blank">open board in monday.com →</a></div>
+      <div class="sub" id="overviewSub"></div>
     </div>
     <div class="filters" id="statusFilters"></div>
   </div>
@@ -391,126 +418,329 @@
 </div>
 </div>
 
-<!-- TAB: RELEASE TIER 1 -->
-<div class="tab-panel" id="tab-tier1">
+<div class="subtab-panel" id="subtab-tier1">
 <div class="section">
   <div class="section-title">
     <div>
-      <h2>Release Tier 1 — marketing launch readiness</h2>
-      <div class="sub">All 18 groups from the board shown below · full breakdown per card · <a class="board-link" href="https://rentvine.monday.com/boards/18421982964" target="_blank">open board in monday.com →</a></div>
+      <h2>Release Tier 1 &mdash; marketing launch readiness</h2>
+      <div class="sub" id="tier1Sub"></div>
     </div>
   </div>
   <div class="readiness-grid" id="readinessGrid"></div>
   <div class="legend">
-    <span><span class="dot" style="background:var(--vine)"></span>Complete</span>
-    <span><span class="dot" style="background:var(--grape)"></span>In review</span>
-    <span><span class="dot" style="background:var(--honey)"></span>In progress</span>
-    <span><span class="dot" style="background:var(--grey)"></span>Not started</span>
-    <span><span class="dot" style="background:var(--paper);border:1px solid #ddd"></span>N/A</span>
+    <span><span class="ldot" style="background:var(--vine)"></span>Complete</span>
+    <span><span class="ldot" style="background:var(--grape)"></span>Review</span>
+    <span><span class="ldot" style="background:var(--honey)"></span>In progress / ready to schedule</span>
+    <span><span class="ldot" style="background:var(--grey)"></span>Not started / stuck</span>
+    <span><span class="ldot" style="background:var(--paper);border:1px solid #ddd"></span>N/A</span>
   </div>
-  <div class="footnote">11 of the 18 groups (Corporate Accounting, Owner Drip Campaigns, Fixie Pro, Emergency Contact Center, End-to-End Income Verification, Owner Tasks/Workflows, Unified Comms, Built-in Pre-Screening, Document Fraud Detection, MCP, Resident Mobile: Chat) have no checklist items created on the board yet.</div>
+  <div class="footnote" id="tier1Footnote"></div>
 </div>
 </div>
 
-<!-- TAB: RELEASE TIER 2 -->
-<div class="tab-panel" id="tab-tier2">
+<div class="subtab-panel" id="subtab-tier2">
 <div class="section">
   <div class="section-title">
     <div>
       <h2>Release Tier 2</h2>
-      <div class="sub">4 groups · 20 items · no status, marketer, or dates set on any item yet · <a class="board-link" href="https://rentvine.monday.com/boards/18397622866" target="_blank">open board in monday.com →</a></div>
+      <div class="sub" id="tier2Sub"></div>
     </div>
   </div>
   <div class="readiness-grid" id="tier2Grid"></div>
-  <div class="footnote">This board (separate workspace from Release Tier 1/3) is currently a planning template — every item across all four groups has an empty Marketer, Campaign, Category, Status, Product, Target Launch, and Target GA field. Nothing has been marked as started.</div>
+  <div class="footnote" id="tier2Footnote"></div>
 </div>
 </div>
 
-<!-- TAB: RELEASE TIER 3 -->
-<div class="tab-panel" id="tab-tier3">
+<div class="subtab-panel" id="subtab-tier3">
 <div class="section">
   <div class="section-title">
     <div>
       <h2>Release Tier 3</h2>
-      <div class="sub">5 groups · 5 items · no status, marketer, or dates set on any item yet · <a class="board-link" href="https://rentvine.monday.com/boards/18422010041" target="_blank">open board in monday.com →</a></div>
+      <div class="sub" id="tier3Sub"></div>
     </div>
   </div>
   <div class="readiness-grid" id="tier3Grid"></div>
-  <div class="footnote">Each group on this board (Markups & Discounts on Created Bills, PM Mobile App - Move out status (read only), Internal Maintenance v2, TLL - Resident "Opt-in" from Resident Portal, PM Mobile: Notes and Alerts Tagging) contains a single "Blog - Release Notes" item with no Marketer, Campaign, Category, Status, Product, Target Launch, or Target GA set.</div>
+  <div class="footnote" id="tier3Footnote"></div>
 </div>
 </div>
 
+</div>
+
+<div class="tab-panel" id="tab-comms">
+
+<div class="kpi-row" id="commsKpiRow"></div>
+
+<div class="section">
+  <div class="section-title">
+    <div>
+      <h2>The Vine &mdash; monthly customer newsletter</h2>
+      <div class="sub" id="newsletterSub"></div>
+    </div>
+  </div>
+  <table id="newsletterTable">
+    <thead>
+      <tr>
+        <th data-key="edition">Edition</th>
+        <th data-key="item">Content item</th>
+        <th data-key="status">Status</th>
+        <th data-key="collaborator">Collaborator</th>
+        <th data-key="owner">Owner</th>
+        <th data-key="due">Due date</th>
+      </tr>
+    </thead>
+    <tbody id="newsletterBody"></tbody>
+  </table>
+</div>
+
+<div class="section">
+  <div class="section-title">
+    <div>
+      <h2>Customer email sends</h2>
+      <div class="sub" id="emailSub"></div>
+    </div>
+    <div class="filters" id="channelFilters"></div>
+  </div>
+  <table id="emailTable">
+    <thead>
+      <tr>
+        <th data-key="channel">Channel</th>
+        <th data-key="item">What's being sent</th>
+        <th data-key="campaign">Campaign</th>
+        <th data-key="audience">Audience</th>
+        <th data-key="brand">Brand</th>
+        <th data-key="status">Status</th>
+        <th data-key="sendDate">Send date</th>
+      </tr>
+    </thead>
+    <tbody id="emailBody"></tbody>
+  </table>
+  <div class="footnote">Filtered to items in the "Upcoming Campaigns" group whose Audience is set to Current Customers, Current &amp; Prospects, PMW Current Customer, or PMI Customers on the <a class="board-link" href="https://rentvine.monday.com/boards/7035266275" target="_blank">Email Marketing Planner board</a>. Sent, Published, Archived, and automated-email items are excluded.</div>
+</div>
+
+</div>
 
 <script>
-const roadmap = [
-  {tier:"T1", item:"Custom Scoring Matrix", area:"Screening", pm:"Katie Palinchak", status:"Open Beta", ga:"Jun 18", launch:"Q3"},
-  {tier:"T1", item:"Rentvine Reconciliation 2.0", area:"Accounting", pm:"Robert Desotelle", status:"Open Beta", ga:"Jul 29", launch:"Q3"},
-  {tier:"T1", item:"Owner Lead Portal", area:"CRM", pm:"Dallin Welch", status:"On Track", ga:"Jul 31", launch:"Q3"},
-  {tier:"T1", item:"New Support Experience", area:"Support", pm:"Bekah Kohls", status:"On Track", ga:"Aug 31", launch:"Q3"},
-  {tier:"T1", item:"HOME by Rentvine", area:"REP", pm:"Sean Oh", status:"On Track", ga:"Sep 1", launch:"Q3"},
-  {tier:"T1", item:"Document Fraud Detection", area:"Screening", pm:"Katie Palinchak", status:"Research & Discovery", ga:"Sep 30", launch:"Q4"},
-  {tier:"T1", item:"Corporate Accounting", area:"Accounting", pm:"Robert Desotelle", status:"Research & Discovery", ga:"Oct 1", launch:"Q4"},
-  {tier:"T1", item:"Fixie Pro - Maintenance Intake with Voice", area:"AI", pm:"Heraíd Castillo", status:"At Risk", ga:"Oct 5", launch:"Q4"},
-  {tier:"T1", item:"Emergency Contact Center", area:"AI", pm:"Heraíd Castillo", status:"At Risk", ga:"Oct 5", launch:"Q4"},
-  {tier:"T1", item:"Maintenance Command Center", area:"AI", pm:"Heraíd Castillo", status:"On Track", ga:"Oct 5", launch:"Q4"},
-  {tier:"T1", item:"Owner Tasks/Workflows", area:"CRM", pm:"Dallin Welch", status:"Research & Discovery", ga:"Oct 30", launch:"Q4"},
-  {tier:"T1", item:"Owner Drip Campaigns", area:"CRM", pm:"Dallin Welch", status:"Research & Discovery", ga:"Nov 30", launch:"Q4"},
-  {tier:"T1", item:"End-to-End Income Verification", area:"Screening", pm:"Katie Palinchak", status:"Research & Discovery", ga:"Nov 30", launch:"Q1"},
-  {tier:"T1", item:"Unified Communications", area:"Comms", pm:"Jesse Monteiro", status:"Research & Discovery", ga:"Dec 12", launch:"Q1"},
-  {tier:"T1", item:"Built-in Pre-screening", area:"Screening", pm:"Katie Palinchak", status:"Not started", ga:"Jan 1, 2027", launch:"Q1"},
-  {tier:"T1", item:"Resident App", area:"Mobile", pm:"Sara Nachman", status:"On Track", ga:"Jan 1, 2027", launch:"Q1"},
-  {tier:"T1", item:"MCP", area:"AI", pm:"Dallin Welch", status:"Closed Beta", ga:"Jan 1, 2027", launch:"Q1"},
-  {tier:"T1", item:"Mobile: Push Notifications", area:"Mobile", pm:"Sara Nachman", status:"On Track", ga:"Nov 30", launch:"Q1"},
-  {tier:"T1", item:"Resident Mobile: Chat", area:"Mobile", pm:"Sara Nachman", status:"Research & Discovery", ga:"Jan 1, 2027", launch:"Q1"},
-  {tier:"T2", item:"Combined Offer / Rentsign Stages", area:"Leasing", pm:"Jesse Monteiro", status:"On Track", ga:"Jul 14", launch:"Q3"},
-  {tier:"T2", item:"PM Mobile App - Maintenance Estimates", area:"Mobile", pm:"Sara Nachman", status:"On Track", ga:"Jul 31", launch:"Q3"},
-  {tier:"T2", item:"Positive Credit Reporting", area:"REP", pm:"Sean Oh", status:"At Risk", ga:"Sep 1", launch:"Q3"},
-  {tier:"T2", item:"Speed to Lead", area:"CRM", pm:"Dallin Welch", status:"Not started", ga:"Sep 15", launch:"Q4"},
-  {tier:"T3", item:'PM Mobile App - Move out status (read only)', area:"Mobile", pm:"Sara Nachman", status:"On Track", ga:"Jul 10", launch:"Q3"},
-  {tier:"T3", item:"Internal Maintenance v2", area:"Maintenance", pm:"Heraíd Castillo", status:"On Track", ga:"Aug 3", launch:"Q3"},
-  {tier:"T3", item:"PM Mobile: Notes and Alerts Tagging", area:"Mobile", pm:"Sara Nachman", status:"On Track", ga:"Aug 10", launch:"Q3"},
-  {tier:"T3", item:"Markups & Discounts on Created Billls", area:"Accounting", pm:"Robert Desotelle", status:"At Risk", ga:"Oct 1", launch:"Q4"},
-  {tier:"T3", item:'TLL - Resident "Opt-in" from Resident Portal', area:"REP", pm:"Sean Oh", status:"Research & Discovery", ga:"Jan 1, 2027", launch:"Q4"},
+function boardUrl(id){ return 'https://rentvine.monday.com/boards/' + id; }
+
+function esc(s){
+  return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function formatDate(iso){
+  if(!iso) return '—';
+  const d = new Date(iso + 'T00:00:00');
+  if (isNaN(d.getTime())) return iso;
+  const opts = {month:'short', day:'numeric', year:'numeric'};
+  return d.toLocaleDateString('en-US', opts);
+}
+
+/* =========================================================
+   STATIC SNAPSHOT DATA
+   Pulled from monday.com on Jul 20, 2026. This is a
+   point-in-time export -- it does not refresh.
+   ========================================================= */
+
+const OVERVIEW_BOARD = 18421987602;
+const TIER1_BOARD = 18421982964;
+const TIER2_BOARD = 18397622866;
+const TIER3_BOARD = 18422010041;
+const NEWSLETTER_BOARD = 18419184577;
+const EMAIL_BOARD = 7035266275;
+
+const OVERVIEW_ITEMS = [
+  {name:"Custom Scoring Matrix", group:{title:"T1 - MAJOR"}, column_values:{color_mm01fn79:"Screening", text_mm01mf9k:"Katie Palinchak", status:"Open Beta", date_mm0132d9:"2026-06-18", color_mm01h0a4:"Q3"}},
+  {name:"Rentvine Reconciliation 2.0", group:{title:"T1 - MAJOR"}, column_values:{color_mm01fn79:"Accounting", text_mm01mf9k:"Robert Desotelle", status:"Open Beta", date_mm0132d9:"2026-07-29", color_mm01h0a4:"Q3"}},
+  {name:"Owner Lead Portal", group:{title:"T1 - MAJOR"}, column_values:{color_mm01fn79:"CRM", text_mm01mf9k:"Dallin Welch", status:"On Track", date_mm0132d9:"2026-07-31", color_mm01h0a4:"Q3"}},
+  {name:"New Support Experience", group:{title:"T1 - MAJOR"}, column_values:{color_mm01fn79:"Support", text_mm01mf9k:"Bekah Kohls", status:"On Track", date_mm0132d9:"2026-08-31", color_mm01h0a4:"Q3"}},
+  {name:"HOME by Rentvine", group:{title:"T1 - MAJOR"}, column_values:{color_mm01fn79:"REP", text_mm01mf9k:"Sean Oh", status:"On Track", date_mm0132d9:"2026-09-01", color_mm01h0a4:"Q3"}},
+  {name:"Document Fraud Detection", group:{title:"T1 - MAJOR"}, column_values:{color_mm01fn79:"Screening", text_mm01mf9k:"Katie Palinchak", status:"Research & Discovery", date_mm0132d9:"2026-09-30", color_mm01h0a4:"Q4"}},
+  {name:"Corporate Accounting", group:{title:"T1 - MAJOR"}, column_values:{color_mm01fn79:"Accounting", text_mm01mf9k:"Robert Desotelle", status:"Research & Discovery", date_mm0132d9:"2026-10-01", color_mm01h0a4:"Q4"}},
+  {name:"Fixie Pro - Maintenance Intake with Voice", group:{title:"T1 - MAJOR"}, column_values:{color_mm01fn79:"AI", text_mm01mf9k:"Heraíd Castillo", status:"At Risk", date_mm0132d9:"2026-10-05", color_mm01h0a4:"Q4"}},
+  {name:"Emergency Contact Center", group:{title:"T1 - MAJOR"}, column_values:{color_mm01fn79:"AI", text_mm01mf9k:"Heraíd Castillo", status:"At Risk", date_mm0132d9:"2026-10-05", color_mm01h0a4:"Q4"}},
+  {name:"Maintenance Command Center", group:{title:"T1 - MAJOR"}, column_values:{color_mm01fn79:"AI", text_mm01mf9k:"Heraíd Castillo", status:"On Track", date_mm0132d9:"2026-10-05", color_mm01h0a4:"Q4"}},
+  {name:"Owner Tasks/Workflows", group:{title:"T1 - MAJOR"}, column_values:{color_mm01fn79:"CRM", text_mm01mf9k:"Dallin Welch", status:"Research & Discovery", date_mm0132d9:"2026-10-30", color_mm01h0a4:"Q4"}},
+  {name:"Owner Drip Campaigns", group:{title:"T1 - MAJOR"}, column_values:{color_mm01fn79:"CRM", text_mm01mf9k:"Dallin Welch", status:"Research & Discovery", date_mm0132d9:"2026-11-30", color_mm01h0a4:"Q4"}},
+  {name:"End-to-End Income Verification", group:{title:"T1 - MAJOR"}, column_values:{color_mm01fn79:"Screening", text_mm01mf9k:"Katie Palinchak", status:"Research & Discovery", date_mm0132d9:"2026-11-30", color_mm01h0a4:"Q1"}},
+  {name:"Unified Communications", group:{title:"T1 - MAJOR"}, column_values:{color_mm01fn79:"Comms", text_mm01mf9k:"Jesse Monteiro", status:"Research & Discovery", date_mm0132d9:"2026-12-12", color_mm01h0a4:"Q1"}},
+  {name:"Built-in Pre-screening", group:{title:"T1 - MAJOR"}, column_values:{color_mm01fn79:"Screening", text_mm01mf9k:"Katie Palinchak", status:"Not started", date_mm0132d9:"2027-01-01", color_mm01h0a4:"Q1"}},
+  {name:"Resident App", group:{title:"T1 - MAJOR"}, column_values:{color_mm01fn79:"Mobile", text_mm01mf9k:"Sara Nachman", status:"On Track", date_mm0132d9:"2027-01-01", color_mm01h0a4:"Q1"}},
+  {name:"MCP", group:{title:"T1 - MAJOR"}, column_values:{color_mm01fn79:"AI", text_mm01mf9k:"Dallin Welch", status:"Closed Beta", date_mm0132d9:"2027-01-01", color_mm01h0a4:"Q1"}},
+  {name:"Mobile: Push Notifications", group:{title:"T1 - MAJOR"}, column_values:{color_mm01fn79:"Mobile", text_mm01mf9k:"Sara Nachman", status:"On Track", date_mm0132d9:"2026-11-30", color_mm01h0a4:"Q1"}},
+  {name:"Resident Mobile: Chat", group:{title:"T1 - MAJOR"}, column_values:{color_mm01fn79:"Mobile", text_mm01mf9k:"Sara Nachman", status:"Research & Discovery", date_mm0132d9:"2027-01-01", color_mm01h0a4:"Q1"}},
+  {name:"Combined Offer / Rentsign Stages", group:{title:"T2 - MEDIUM"}, column_values:{color_mm01fn79:"Leasing", text_mm01mf9k:"Jesse Monteiro", status:"On Track", date_mm0132d9:"2026-07-14", color_mm01h0a4:"Q3"}},
+  {name:"PM Mobile App - Maintenance Estimates", group:{title:"T2 - MEDIUM"}, column_values:{color_mm01fn79:"Mobile", text_mm01mf9k:"Sara Nachman", status:"On Track", date_mm0132d9:"2026-07-31", color_mm01h0a4:"Q3"}},
+  {name:"Positive Credit Reporting", group:{title:"T2 - MEDIUM"}, column_values:{color_mm01fn79:"REP", text_mm01mf9k:"Sean Oh", status:"At Risk", date_mm0132d9:"2026-09-01", color_mm01h0a4:"Q3"}},
+  {name:"Speed to Lead", group:{title:"T2 - MEDIUM"}, column_values:{color_mm01fn79:"CRM", text_mm01mf9k:"Dallin Welch", status:"Not started", date_mm0132d9:"2026-09-15", color_mm01h0a4:"Q4"}},
+  {name:"PM Mobile App - Move out status (read only)", group:{title:"T3 - Minor"}, column_values:{color_mm01fn79:"Mobile", text_mm01mf9k:"Sara Nachman", status:"On Track", date_mm0132d9:"2026-07-10", color_mm01h0a4:"Q3"}},
+  {name:"Internal Maintenance v2", group:{title:"T3 - Minor"}, column_values:{color_mm01fn79:"Maintenance", text_mm01mf9k:"Heraíd Castillo", status:"On Track", date_mm0132d9:"2026-08-03", color_mm01h0a4:"Q3"}},
+  {name:"PM Mobile: Notes and Alerts Tagging", group:{title:"T3 - Minor"}, column_values:{color_mm01fn79:"Mobile", text_mm01mf9k:"Sara Nachman", status:"On Track", date_mm0132d9:"2026-08-10", color_mm01h0a4:"Q3"}},
+  {name:"Markups & Discounts on Created Billls", group:{title:"T3 - Minor"}, column_values:{color_mm01fn79:"Accounting", text_mm01mf9k:"Robert Desotelle", status:"At Risk", date_mm0132d9:"2026-10-01", color_mm01h0a4:"Q4"}},
+  {name:"TLL - Resident \"Opt-in\" from Resident Portal", group:{title:"T3 - Minor"}, column_values:{color_mm01fn79:"REP", text_mm01mf9k:"Sean Oh", status:"Research & Discovery", date_mm0132d9:"2027-01-01", color_mm01h0a4:"Q4"}},
 ];
 
-const statusClass = {
-  "Open Beta":"status-openbeta",
-  "Closed Beta":"status-closedbeta",
-  "On Track":"status-ontrack",
-  "At Risk":"status-atrisk",
-  "Research & Discovery":"status-research",
-  "Not started":"status-notstarted"
+const TIER1_GROUPS = [
+  {id:"g1", title:"New Product"},
+  {id:"g2", title:"Custom Scoring Matrix"},
+  {id:"g3", title:"Owner Lead Portal"},
+  {id:"g4", title:"Rentvine Reconciliation 2.0"},
+  {id:"g5", title:"REP"},
+  {id:"g6", title:"Maintenance Command Center"},
+  {id:"g7", title:"Resident App"},
+  {id:"g8", title:"Mobile: Push Notifications"},
+  {id:"g9", title:"Corporate Accounting"},
+  {id:"g10", title:"Owner Drip Campaigns"},
+  {id:"g11", title:"Fixie Pro - Maintenance Intake with Voice"},
+  {id:"g12", title:"Emergency Contact Center"},
+  {id:"g13", title:"End-to-End Income Verification"},
+  {id:"g14", title:"Owner Tasks/Workflows"},
+  {id:"g15", title:"Unified Comms"},
+  {id:"g16", title:"Built-in Pre-Screening"},
+  {id:"g17", title:"Document Fraud Detection"},
+  {id:"g18", title:"MCP"},
+  {id:"g19", title:"Resident Mobile: Chat"},
+];
+
+const TIER1_TASK_NAMES = ["GTM Campaign & Positioning Brief","Customer email","Prospect email","Blog post","Add to Sales Hub","Animation video","Social post","Add new web page or update existing","Feature in website nav","Paid ad campaign","Press release & PR Outreach"];
+
+function makeTier1Tasks(groupId, statuses){
+  return TIER1_TASK_NAMES.map((name, i) => ({ name, group:{id:groupId}, column_values:{status: statuses[i]} }));
+}
+
+const TIER1_ITEMS = [
+  ...makeTier1Tasks("g2", ["In progress","Not started","Not started","Not started","Not started","Not started","Not started","Not started","N/A","N/A","N/A"]),
+  ...makeTier1Tasks("g3", ["Not started","Not started","Not started","Not started","Not started","Not started","Not started","Not started","Not started","Not started","Not started"]),
+  ...makeTier1Tasks("g4", ["Complete","Complete","Complete","Complete","In progress","Complete","Complete","In progress","Not started","N/A","N/A"]),
+  ...makeTier1Tasks("g5", ["In progress","Complete","Complete","Review","Not started","Not started","Not started","In progress","Not started","Not started","In progress"]),
+  ...makeTier1Tasks("g6", ["Not started","Not started","Not started","Not started","Not started","Not started","Not started","Not started","Not started","Not started","Not started"]),
+  ...makeTier1Tasks("g7", ["Not started","Not started","Not started","Not started","Not started","Not started","Not started","Not started","Not started","Not started","Not started"]),
+  ...makeTier1Tasks("g8", ["Not started","Not started","Not started","Not started","Not started","Not started","Not started","Not started","Not started","Not started","Not started"]),
+];
+
+const TIER2_ITEMS = [
+  {name:"GTM Campaign & Positioning Brief", group:{title:"Combined Offer / Rentsign Stages"}, column_values:{status:null}},
+  {name:"Included in The Vine Newsletter", group:{title:"Combined Offer / Rentsign Stages"}, column_values:{status:null}},
+  {name:"Blog post", group:{title:"Combined Offer / Rentsign Stages"}, column_values:{status:null}},
+  {name:"Social Post", group:{title:"Combined Offer / Rentsign Stages"}, column_values:{status:null}},
+  {name:"Update existing web page", group:{title:"Combined Offer / Rentsign Stages"}, column_values:{status:null}},
+  {name:"GTM Campaign & Positioning Brief", group:{title:"PM Mobile App  Maintenance Estimates"}, column_values:{status:null}},
+  {name:"Included in The Vine Newsletter", group:{title:"PM Mobile App  Maintenance Estimates"}, column_values:{status:null}},
+  {name:"Blog post", group:{title:"PM Mobile App  Maintenance Estimates"}, column_values:{status:null}},
+  {name:"Social Post", group:{title:"PM Mobile App  Maintenance Estimates"}, column_values:{status:null}},
+  {name:"Update existing web page", group:{title:"PM Mobile App  Maintenance Estimates"}, column_values:{status:null}},
+  {name:"GTM Campaign & Positioning Brief", group:{title:"Positive Credit Reporting"}, column_values:{status:null}},
+  {name:"Included in The Vine Newsletter", group:{title:"Positive Credit Reporting"}, column_values:{status:null}},
+  {name:"Blog post", group:{title:"Positive Credit Reporting"}, column_values:{status:null}},
+  {name:"Social Post", group:{title:"Positive Credit Reporting"}, column_values:{status:null}},
+  {name:"Update existing web page", group:{title:"Positive Credit Reporting"}, column_values:{status:null}},
+  {name:"GTM Campaign & Positioning Brief", group:{title:"Speed to Lead"}, column_values:{status:null}},
+  {name:"Included in The Vine Newsletter", group:{title:"Speed to Lead"}, column_values:{status:null}},
+  {name:"Blog post", group:{title:"Speed to Lead"}, column_values:{status:null}},
+  {name:"Social Post", group:{title:"Speed to Lead"}, column_values:{status:null}},
+  {name:"Update existing web page", group:{title:"Speed to Lead"}, column_values:{status:null}},
+];
+
+const TIER3_ITEMS = [
+  {name:"Blog - Release Notes", group:{title:"Markups & Discounts on Created Bills"}, column_values:{status:null}},
+  {name:"Blog - Release Notes", group:{title:"PM Mobile App - Move out status (read only)"}, column_values:{status:null}},
+  {name:"Blog - Release Notes", group:{title:"Internal Maintenance v2"}, column_values:{status:null}},
+  {name:"Blog - Release Notes", group:{title:"TLL - Resident \"Opt-in\" from Resident Portal"}, column_values:{status:null}},
+  {name:"Blog - Release Notes", group:{title:"PM Mobile: Notes and Alerts Tagging"}, column_values:{status:null}},
+];
+
+const NEWSLETTER_ITEMS = [
+  {name:"1. The Lineup -- Issue Preview", group:{title:"Edition 2 Outline - August 2026"}, column_values:{color_mm4m5t26:null, multiple_person_mm4t5yxh:null, multiple_person_mm4mqxb2:"Jocelyn Gardiner", date_mm4mq10d:null}},
+  {name:"2. Fresh off the Vine -- August Product Update", group:{title:"Edition 2 Outline - August 2026"}, column_values:{color_mm4m5t26:null, multiple_person_mm4t5yxh:"Kaitlin Yezek", multiple_person_mm4mqxb2:"Jocelyn Gardiner", date_mm4mq10d:null}},
+  {name:"3. Straight from the Roots -- Product Decision Story", group:{title:"Edition 2 Outline - August 2026"}, column_values:{color_mm4m5t26:null, multiple_person_mm4t5yxh:"Kaitlin Yezek", multiple_person_mm4mqxb2:"Jocelyn Gardiner", date_mm4mq10d:null}},
+  {name:"4. Field Notes -- Rosenbaum Realty Group", group:{title:"Edition 2 Outline - August 2026"}, column_values:{color_mm4m5t26:"Working on it", multiple_person_mm4t5yxh:null, multiple_person_mm4mqxb2:"Jocelyn Gardiner", date_mm4mq10d:null}},
+  {name:"5. The Breakdown -- August Stat", group:{title:"Edition 2 Outline - August 2026"}, column_values:{color_mm4m5t26:"Working on it", multiple_person_mm4t5yxh:null, multiple_person_mm4mqxb2:"Jocelyn Gardiner", date_mm4mq10d:null}},
+  {name:"6. Mark Your Doors -- August/September Events", group:{title:"Edition 2 Outline - August 2026"}, column_values:{color_mm4m5t26:"Working on it", multiple_person_mm4t5yxh:"Samantha Magyar", multiple_person_mm4mqxb2:"Jocelyn Gardiner", date_mm4mq10d:null}},
+];
+
+const EMAIL_ITEMS = [
+  {name:"propertymanagement.com + Rentvine connection", group:{title:"Upcoming Campaigns"}, column_values:{status__1:"Rentvine", status_12:"Current Customers", date:"2026-07-21", date_mks7mh1r:"2026-07-10", dropdown_mm1cac03:"PMSWSF", status8:"Working on it"}},
+  {name:"The Grow Report - July", group:{title:"Upcoming Campaigns"}, column_values:{status__1:"PMW", status_12:"PMW Current Customer", date:"2026-07-25", date_mks7mh1r:null, dropdown_mm1cac03:"The Grow Report '26", status8:"Working on it"}},
+  {name:"Product Launch: Rentvine Reconciliation 2.0", group:{title:"Upcoming Campaigns"}, column_values:{status__1:"Rentvine", status_12:"Current Customers", date:"2026-07-29", date_mks7mh1r:"2026-04-24", dropdown_mm1cac03:"RV Product Releases 2026, PMSWSF", status8:"Working on it"}},
+  {name:"PM Assist AI Cookbook webinar", group:{title:"Upcoming Campaigns"}, column_values:{status__1:"Rentvine", status_12:"Current & Prospects", date:"2026-08-05", date_mks7mh1r:"2026-07-29", dropdown_mm1cac03:"PMSWSF", status8:"Content"}},
+  {name:"PM Assist AI Cookbook webinar reminder", group:{title:"Upcoming Campaigns"}, column_values:{status__1:"Rentvine", status_12:"Current & Prospects", date:"2026-08-13", date_mks7mh1r:"2026-08-04", dropdown_mm1cac03:null, status8:null}},
+  {name:"Product Launch: Inbound Phone Support", group:{title:"Upcoming Campaigns"}, column_values:{status__1:"Rentvine", status_12:"Current Customers", date:"2026-08-25", date_mks7mh1r:"2026-08-13", dropdown_mm1cac03:"RV Product Releases 2026, PMSWSF", status8:"On Hold"}},
+  {name:"The Grow Report - August", group:{title:"Upcoming Campaigns"}, column_values:{status__1:"PMW", status_12:"PMW Current Customer", date:"2026-08-29", date_mks7mh1r:null, dropdown_mm1cac03:"The Grow Report '26", status8:null}},
+  {name:"Product Launch: HOME (Resident Experience Package)", group:{title:"Upcoming Campaigns"}, column_values:{status__1:"Rentvine", status_12:"Current Customers", date:"2026-09-01", date_mks7mh1r:null, dropdown_mm1cac03:"PMSWSF", status8:null}},
+  {name:"The Grow Report - September", group:{title:"Upcoming Campaigns"}, column_values:{status__1:"PMW", status_12:"PMW Current Customer", date:"2026-09-26", date_mks7mh1r:null, dropdown_mm1cac03:"The Grow Report '26", status8:null}},
+  {name:"The Grow Report - October", group:{title:"Upcoming Campaigns"}, column_values:{status__1:"PMW", status_12:"PMW Current Customer", date:"2026-10-24", date_mks7mh1r:null, dropdown_mm1cac03:"The Grow Report '26", status8:null}},
+  {name:"The Grow Report - November", group:{title:"Upcoming Campaigns"}, column_values:{status__1:"PMW", status_12:"PMW Current Customer", date:"2026-11-28", date_mks7mh1r:null, dropdown_mm1cac03:"The Grow Report '26", status8:null}},
+  {name:"The Grow Report - December", group:{title:"Upcoming Campaigns"}, column_values:{status__1:"PMW", status_12:"PMW Current Customer", date:"2026-12-19", date_mks7mh1r:null, dropdown_mm1cac03:"The Grow Report '26", status8:null}},
+];
+
+/* ---- Overview status styling ---- */
+const STATUS_STYLE = {
+  'Open Beta':        {bg:'var(--vine)',  fg:'#fff'},
+  'GA Launched':      {bg:'var(--vine)',  fg:'#fff'},
+  'Closed Beta':      {bg:'var(--blue)',  fg:'#fff'},
+  'On Track':         {bg:'var(--honey)', fg:'var(--night)'},
+  'At Risk':          {bg:'var(--lava)',  fg:'#fff'},
+  'Research & Discovery': {bg:'var(--grape)', fg:'#fff'},
+  'Not started':      {bg:'var(--grey)',  fg:'#fff'},
 };
+function statusPill(label){
+  const style = STATUS_STYLE[label] || {bg:'var(--stone)', fg:'#fff'};
+  return `<span class="pill" style="background:${style.bg};color:${style.fg}">${esc(label || '—')}</span>`;
+}
+const ON_TRACK_STATUSES = ['On Track','Open Beta','Closed Beta','GA Launched'];
+
+/* ---- Overview tab ---- */
+let overviewRows = [];
+let currentFilter = 'All';
+let sortKey = null, sortAsc = true;
+
+function tierFromGroup(title){
+  if(/^T1/i.test(title)) return {code:'T1', cls:'major'};
+  if(/^T2/i.test(title)) return {code:'T2', cls:'medium'};
+  if(/^T3/i.test(title)) return {code:'T3', cls:'minor'};
+  return {code: title, cls:''};
+}
+
+function buildOverviewRows(items){
+  return items.map(it => {
+    const cv = it.column_values || {};
+    const tier = tierFromGroup((it.group && it.group.title) || '');
+    return {
+      tier: tier.code,
+      tierCls: tier.cls,
+      item: it.name,
+      area: cv.color_mm01fn79 || '',
+      pm: cv.text_mm01mf9k || cv.person || '',
+      status: cv.status || '',
+      ga: cv.date_mm0132d9 || null,
+      launch: cv.color_mm01h0a4 || ''
+    };
+  });
+}
 
 function renderKpis(){
-  const total = roadmap.length;
-  const onTrack = roadmap.filter(r=>["On Track","Open Beta","Closed Beta"].includes(r.status)).length;
-  const atRisk = roadmap.filter(r=>r.status==="At Risk").length;
-  const research = roadmap.filter(r=>r.status==="Research & Discovery").length;
+  const total = overviewRows.length;
+  const onTrack = overviewRows.filter(r => ON_TRACK_STATUSES.includes(r.status)).length;
+  const atRisk = overviewRows.filter(r => r.status === 'At Risk').length;
+  const research = overviewRows.filter(r => r.status === 'Research & Discovery').length;
   const kpis = [
-    {num:total, label:"Total initiatives tracked", cls:"blue"},
-    {num:onTrack, label:"On track / in beta", cls:"vine"},
-    {num:atRisk, label:"At risk", cls:"risk"},
-    {num:research, label:"In research & discovery", cls:"grape"},
+    {num:total, label:'Total initiatives tracked', cls:'blue'},
+    {num:onTrack, label:'On track / in beta', cls:'vine'},
+    {num:atRisk, label:'At risk', cls:'risk'},
+    {num:research, label:'In research & discovery', cls:'grape'},
   ];
-  document.getElementById('kpiRow').innerHTML = kpis.map(k=>`
+  document.getElementById('kpiRow').innerHTML = kpis.map(k => `
     <div class="kpi ${k.cls}">
       <div class="num">${k.num}</div>
       <div class="label">${k.label}</div>
     </div>`).join('');
 }
 
-let currentFilter = "All";
-let sortKey = null;
-let sortAsc = true;
-
 function renderFilters(){
-  const statuses = ["All", ...new Set(roadmap.map(r=>r.status))];
-  document.getElementById('statusFilters').innerHTML = statuses.map(s=>
-    `<button class="filter-btn ${s===currentFilter?'active':''}" data-status="${s}">${s}</button>`
+  const statuses = ['All', ...new Set(overviewRows.map(r => r.status).filter(Boolean))];
+  document.getElementById('statusFilters').innerHTML = statuses.map(s =>
+    `<button class="filter-btn ${s===currentFilter?'active':''}" data-status="${esc(s)}">${esc(s)}</button>`
   ).join('');
-  document.querySelectorAll('.filter-btn').forEach(btn=>{
-    btn.addEventListener('click', ()=>{
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
       currentFilter = btn.dataset.status;
       renderFilters();
       renderTable();
@@ -519,258 +749,408 @@ function renderFilters(){
 }
 
 function renderTable(){
-  let rows = currentFilter==="All" ? roadmap.slice() : roadmap.filter(r=>r.status===currentFilter);
+  let rows = currentFilter === 'All' ? overviewRows.slice() : overviewRows.filter(r => r.status === currentFilter);
   if(sortKey){
-    rows.sort((a,b)=>{
-      let av=a[sortKey], bv=b[sortKey];
-      if(av<bv) return sortAsc?-1:1;
-      if(av>bv) return sortAsc?1:-1;
+    rows.sort((a,b) => {
+      let av = a[sortKey] || '', bv = b[sortKey] || '';
+      if(av < bv) return sortAsc ? -1 : 1;
+      if(av > bv) return sortAsc ? 1 : -1;
       return 0;
     });
   }
-  document.getElementById('roadmapBody').innerHTML = rows.map(r=>`
+  const body = document.getElementById('roadmapBody');
+  if(rows.length === 0){
+    body.innerHTML = `<tr><td colspan="7" class="empty-state">No items match this filter.</td></tr>`;
+    return;
+  }
+  body.innerHTML = rows.map(r => `
     <tr>
-      <td><span class="tier-badge ${r.tier==='T1'?'major':r.tier==='T2'?'medium':'minor'}">${r.tier}</span></td>
-      <td class="item-name">${r.item}</td>
-      <td><span class="area-chip">${r.area}</span></td>
-      <td>${r.pm}</td>
-      <td><span class="pill ${statusClass[r.status]||''}">${r.status}</span></td>
-      <td>${r.ga}</td>
-      <td>${r.launch}</td>
+      <td><span class="tier-badge ${r.tierCls}">${esc(r.tier)}</span></td>
+      <td class="item-name">${esc(r.item)}</td>
+      <td>${r.area ? `<span class="area-chip">${esc(r.area)}</span>` : ''}</td>
+      <td>${esc(r.pm)}</td>
+      <td>${statusPill(r.status)}</td>
+      <td>${formatDate(r.ga)}</td>
+      <td>${esc(r.launch)}</td>
     </tr>`).join('');
 }
 
-document.querySelectorAll('#roadmapTable thead th').forEach(th=>{
-  th.addEventListener('click', ()=>{
+document.querySelectorAll('#roadmapTable thead th').forEach(th => {
+  th.addEventListener('click', () => {
     const key = th.dataset.key;
-    if(sortKey===key){ sortAsc=!sortAsc; } else { sortKey=key; sortAsc=true; }
+    if(sortKey === key){ sortAsc = !sortAsc; } else { sortKey = key; sortAsc = true; }
     renderTable();
   });
 });
 
-// ---- Marketing readiness data ----
-const readiness = [
-  {
-    name:"HOME by Rentvine",
-    highlight:true,
-    note:"6 of 11 assets touched — 2 complete, 1 in review, 3 in progress.",
-    tasks:[
-      {n:"GTM Campaign & Positioning Brief", s:"progress"},
-      {n:"Customer email", s:"complete"},
-      {n:"Prospect email", s:"complete"},
-      {n:"Blog post", s:"review"},
-      {n:"Add to Sales Hub", s:"not"},
-      {n:"Animation video", s:"not"},
-      {n:"Social post", s:"not"},
-      {n:"Add new web page or update existing", s:"progress"},
-      {n:"Feature in website nav", s:"not"},
-      {n:"Paid ad campaign", s:"not"},
-      {n:"Press release & PR Outreach", s:"progress"},
-    ]
-  },
-  {
-    name:"Custom Scoring Matrix",
-    note:"GTM brief in progress; 3 assets marked N/A for this launch.",
-    tasks:[
-      {n:"GTM Campaign & Positioning Brief", s:"progress"},
-      {n:"Customer email", s:"not"},
-      {n:"Prospect email", s:"not"},
-      {n:"Blog post", s:"not"},
-      {n:"Add to Sales Hub", s:"not"},
-      {n:"Animation video", s:"not"},
-      {n:"Social post", s:"not"},
-      {n:"Add new web page or update existing", s:"not"},
-      {n:"Feature in website nav", s:"na"},
-      {n:"Paid ad campaign", s:"na"},
-      {n:"Press release & PR Outreach", s:"na"},
-    ]
-  },
-  {
-    name:"Owner Lead Portal",
-    note:"Checklist created, all 11 assets still queued.",
-    tasks:Array(11).fill(0).map((_,i)=>({n:["GTM Campaign & Positioning Brief","Customer email","Prospect email","Blog post","Add to Sales Hub","Animation video","Social post","Add new web page or update existing","Feature in website nav","Paid ad campaign","Press release & PR Outreach"][i], s:"not"}))
-  },
-  {
-    name:"Rentvine Reconciliation 2.0",
-    highlight:true,
-    note:"Most advanced checklist on the board — 7 of 11 assets complete.",
-    tasks:[
-      {n:"GTM Campaign & Positioning Brief", s:"complete"},
-      {n:"Customer Email", s:"complete"},
-      {n:"Prospect Email", s:"complete"},
-      {n:"Blog Post", s:"complete"},
-      {n:"Add to Sales Hub", s:"progress"},
-      {n:"Animation Video", s:"complete"},
-      {n:"Social Post", s:"complete"},
-      {n:"Add new web page or update existing", s:"progress"},
-      {n:"Feature in website nav", s:"not"},
-      {n:"Paid ad campaign", s:"na"},
-      {n:"Press Release & PR Outreach", s:"na"},
-    ]
-  },
-  {
-    name:"Maintenance Command Center",
-    note:"Checklist created, all 11 assets confirmed not started.",
-    tasks:["GTM Campaign & Positioning Brief","Customer email","Prospect email","Blog post","Add to Sales Hub","Animation video","Social post","Add new web page or update existing","Feature in website nav","Paid ad campaign","Press release & PR Outreach"].map(n=>({n, s:"not"}))
-  },
-  {
-    name:"Resident App",
-    note:"Checklist created, all 11 assets confirmed not started.",
-    tasks:["GTM Campaign & Positioning Brief","Customer email","Prospect email","Blog post","Add to Sales Hub","Animation video","Social post","Add new web page or update existing","Feature in website nav","Paid ad campaign","Press release & PR Outreach"].map(n=>({n, s:"not"}))
-  },
-  {
-    name:"Mobile: Push Notifications",
-    note:"Checklist created, all 11 assets confirmed not started.",
-    tasks:["GTM Campaign & Positioning Brief","Customer email","Prospect email","Blog post","Add to Sales Hub","Animation video","Social post","Add new web page or update existing","Feature in website nav","Paid ad campaign","Press release & PR Outreach"].map(n=>({n, s:"not"}))
-  },
-  {name:"Corporate Accounting", note:"No items in this group yet.", tasks:[], noItems:true},
-  {name:"Owner Drip Campaigns", note:"No items in this group yet.", tasks:[], noItems:true},
-  {name:"Fixie Pro - Maintenance Intake with Voice", note:"No items in this group yet.", tasks:[], noItems:true},
-  {name:"Emergency Contact Center", note:"No items in this group yet.", tasks:[], noItems:true},
-  {name:"End-to-End Income Verification", note:"No items in this group yet.", tasks:[], noItems:true},
-  {name:"Owner Tasks/Workflows", note:"No items in this group yet.", tasks:[], noItems:true},
-  {name:"Unified Comms", note:"No items in this group yet.", tasks:[], noItems:true},
-  {name:"Built-in Pre-Screening", note:"No items in this group yet.", tasks:[], noItems:true},
-  {name:"Document Fraud Detection", note:"No items in this group yet.", tasks:[], noItems:true},
-  {name:"MCP", note:"No items in this group yet.", tasks:[], noItems:true},
-  {name:"Resident Mobile: Chat", note:"No items in this group yet.", tasks:[], noItems:true},
-];
-
-const taskStatusClass = {complete:"ts-complete", review:"ts-review", progress:"ts-progress", not:"ts-not", na:"ts-na"};
-const taskStatusLabel = {complete:"Complete", review:"Review", progress:"In progress", not:"Not started", na:"N/A"};
-const segColor = {complete:"var(--vine)", review:"var(--grape)", progress:"var(--honey)", not:"var(--grey)", na:"var(--paper)"};
+/* ---- Readiness (Tier 1 checklist) ---- */
+const READY_WEIGHT = {complete:1, review:0.85, progress:0.4, ready:0.2, not:0, stuck:0};
+const READY_CODE = {
+  'Complete':'complete', 'Review':'review', 'In progress':'progress',
+  'Ready to Schedule':'ready', 'Not started':'not', 'Stuck':'stuck', 'N/A':'na'
+};
+const READY_CLASS = {complete:'ts-complete', review:'ts-review', progress:'ts-progress', ready:'ts-progress', not:'ts-not', stuck:'ts-not', na:'ts-na'};
+const READY_SEG_COLOR = {complete:'var(--vine)', review:'var(--grape)', progress:'var(--honey)', ready:'var(--honey)', not:'var(--grey)', stuck:'var(--lava)', na:'var(--paper)'};
 
 function pctComplete(tasks){
-  const scored = tasks.filter(t=>t.s!=="na");
-  if(scored.length===0) return 0;
-  const weight = {complete:1, review:0.85, progress:0.4, not:0};
-  const sum = scored.reduce((a,t)=>a+weight[t.s],0);
-  return Math.round((sum/scored.length)*100);
+  const scored = tasks.filter(t => t.code !== 'na');
+  if(scored.length === 0) return 0;
+  const sum = scored.reduce((a,t) => a + (READY_WEIGHT[t.code] || 0), 0);
+  return Math.round((sum / scored.length) * 100);
 }
 
-function renderReadiness(){
-  const sorted = readiness.slice().sort((a,b)=>{
-    const pa = a.noItems ? -1 : pctComplete(a.tasks);
-    const pb = b.noItems ? -1 : pctComplete(b.tasks);
-    return pb - pa;
-  });
-  document.getElementById('readinessGrid').innerHTML = sorted.map((r,idx)=>{
-    if(r.noItems){
+function renderReadinessGrid(containerId, groups){
+  const withPct = groups.map(g => ({...g, pct: g.noItems ? -1 : pctComplete(g.tasks)}));
+  withPct.sort((a,b) => b.pct - a.pct);
+  document.getElementById(containerId).innerHTML = withPct.map(g => {
+    if(g.noItems){
       return `
       <div class="rcard">
         <div class="rcard-top">
-          <div class="rcard-name">${r.name}</div>
-          <div class="rcard-pct" style="color:var(--stone)">—</div>
+          <div class="rcard-name">${esc(g.name)}</div>
+          <div class="rcard-pct" style="color:var(--stone)">&mdash;</div>
         </div>
         <div class="progress-track"><div class="seg" style="width:100%;background:var(--paper)"></div></div>
-        <div class="rcard-note">${r.note}</div>
+        <div class="rcard-note">No items created on the board yet.</div>
       </div>`;
     }
-    const pct = pctComplete(r.tasks);
-    const segs = r.tasks.map(t=>`<div class="seg" style="width:${100/r.tasks.length}%;background:${segColor[t.s]}"></div>`).join('');
-    const detailRows = r.tasks.map(t=>`
+    const segs = g.tasks.map(t => `<div class="seg" style="width:${100/g.tasks.length}%;background:${READY_SEG_COLOR[t.code] || 'var(--paper)'}"></div>`).join('');
+    const rows = g.tasks.map(t => `
       <div class="task-row">
-        <span>${t.n}</span>
-        <span class="task-status ${taskStatusClass[t.s]}">${taskStatusLabel[t.s]}</span>
+        <span>${esc(t.name)}</span>
+        <span class="task-status ${READY_CLASS[t.code] || 'ts-na'}">${esc(t.label)}</span>
       </div>`).join('');
     return `
-      <div class="rcard ${r.highlight?'highlight':''}" data-idx="${idx}">
+      <div class="rcard ${g.pct >= 70 ? 'highlight' : ''}">
         <div class="rcard-top">
-          <div class="rcard-name">${r.name}</div>
-          <div class="rcard-pct">${pct}%</div>
+          <div class="rcard-name">${esc(g.name)}</div>
+          <div class="rcard-pct">${g.pct}%</div>
         </div>
         <div class="progress-track">${segs}</div>
-        <div class="rcard-note">${r.note}</div>
-        <div class="rcard-detail" style="display:block;margin-top:10px;">${detailRows}</div>
+        <div class="rcard-note">${esc(g.note)}</div>
+        <div class="rcard-detail">${rows}</div>
       </div>`;
   }).join('');
 }
 
-// ---- Release Tier 2 data (all fields confirmed empty on the board) ----
-const tier2Groups = [
-  {
-    name:"Combined Offer / Rentsign Stages",
-    items:["GTM Campaign & Positioning Brief","Included in The Vine Newsletter","Blog post","Social Post","Update existing web page"]
-  },
-  {
-    name:"PM Mobile App Maintenance Estimates",
-    items:["GTM Campaign & Positioning Brief","Included in The Vine Newsletter","Blog post","Social Post","Update existing web page"]
-  },
-  {
-    name:"Positive Credit Reporting",
-    items:["GTM Campaign & Positioning Brief","Included in The Vine Newsletter","Blog post","Social Post","Update existing web page"]
-  },
-  {
-    name:"Speed to Lead",
-    items:["GTM Campaign & Positioning Brief","Included in The Vine Newsletter","Blog post","Social Post","Update existing web page"]
-  },
-];
+function groupTier1(items, groupList){
+  const byGroup = {};
+  items.forEach(it => {
+    const gid = it.group ? it.group.id : 'unknown';
+    if(!byGroup[gid]) byGroup[gid] = { items: [] };
+    byGroup[gid].items.push(it);
+  });
+  return groupList.map(g => {
+    const bucket = byGroup[g.id];
+    if(!bucket || bucket.items.length === 0){
+      return { name: g.title, noItems: true, tasks: [] };
+    }
+    const tasks = bucket.items.map(it => {
+      const label = (it.column_values && it.column_values.status) || 'Not started';
+      const code = READY_CODE[label] || 'not';
+      return { name: it.name, code, label };
+    });
+    const complete = tasks.filter(t => t.code === 'complete').length;
+    const scored = tasks.filter(t => t.code !== 'na').length;
+    return {
+      name: g.title,
+      tasks,
+      note: `${complete} of ${scored} scored assets complete.`
+    };
+  });
+}
 
-function renderTier2(){
-  document.getElementById('tier2Grid').innerHTML = tier2Groups.map(g=>{
-    const rows = g.items.map(i=>`
-      <div class="task-row">
-        <span>${i}</span>
-        <span class="task-status ts-na" style="background:var(--paper);color:var(--stone)">No status</span>
-      </div>`).join('');
+/* ---- Tier 2 / Tier 3 (no weighting, just status display) ---- */
+const SIMPLE_STATUS_STYLE = {
+  'Not started': {bg:'var(--grey)', fg:'#fff'},
+  'Launched':    {bg:'var(--vine)', fg:'#fff'},
+  'Block':       {bg:'var(--lava)', fg:'#fff'},
+  'In progress': {bg:'var(--honey)', fg:'var(--night)'},
+  'Research & Discovery': {bg:'var(--grape)', fg:'#fff'},
+};
+function simpleGroup(items){
+  const byGroup = {};
+  const order = [];
+  items.forEach(it => {
+    const title = (it.group && it.group.title) || 'Ungrouped';
+    if(!byGroup[title]){ byGroup[title] = []; order.push(title); }
+    byGroup[title].push(it);
+  });
+  return order.map(title => ({ name: title, items: byGroup[title] }));
+}
+function renderSimpleGrid(containerId, groups){
+  document.getElementById(containerId).innerHTML = groups.map(g => {
+    const withStatus = g.items.filter(it => it.column_values && it.column_values.status).length;
+    const rows = g.items.map(it => {
+      const label = it.column_values && it.column_values.status;
+      const style = label ? (SIMPLE_STATUS_STYLE[label] || {bg:'var(--stone)', fg:'#fff'}) : null;
+      const pillHtml = label
+        ? `<span class="task-status" style="background:${style.bg};color:${style.fg}">${esc(label)}</span>`
+        : `<span class="task-status ts-na">No status</span>`;
+      return `<div class="task-row"><span>${esc(it.name)}</span>${pillHtml}</div>`;
+    }).join('');
     return `
       <div class="rcard">
         <div class="rcard-top">
-          <div class="rcard-name">${g.name}</div>
-          <div class="rcard-pct" style="color:var(--stone)">—</div>
+          <div class="rcard-name">${esc(g.name)}</div>
+          <div class="rcard-pct" style="color:var(--stone)">&mdash;</div>
         </div>
         <div class="progress-track"><div class="seg" style="width:100%;background:var(--paper)"></div></div>
-        <div class="rcard-note">${g.items.length} items · none started, no marketer assigned</div>
-        <div class="rcard-detail" style="display:block;margin-top:10px;">${rows}</div>
+        <div class="rcard-note">${g.items.length} item${g.items.length===1?'':'s'} &middot; ${withStatus} with status set</div>
+        <div class="rcard-detail">${rows}</div>
       </div>`;
   }).join('');
 }
 
-// ---- Release Tier 3 data (all fields confirmed empty on the board) ----
-const tier3Groups = [
-  {name:"Markups & Discounts on Created Bills", items:["Blog - Release Notes"]},
-  {name:"PM Mobile App - Move out status (read only)", items:["Blog - Release Notes"]},
-  {name:"Internal Maintenance v2", items:["Blog - Release Notes"]},
-  {name:'TLL - Resident "Opt-in" from Resident Portal', items:["Blog - Release Notes"]},
-  {name:"PM Mobile: Notes and Alerts Tagging", items:["Blog - Release Notes"]},
-];
+/* ---- Monthly customer comms: newsletter ---- */
+const NEWSLETTER_STATUS_STYLE = {
+  'Working on it':      {bg:'var(--honey)', fg:'var(--night)'},
+  'Done':               {bg:'var(--vine)',  fg:'#fff'},
+  'Stuck':              {bg:'var(--lava)',  fg:'#fff'},
+  'In Review':          {bg:'var(--blue)',  fg:'#fff'},
+  'With Design':        {bg:'var(--grape)', fg:'#fff'},
+  'Ready for HS':        {bg:'var(--vine)',  fg:'#fff'},
+  'Waiting on Team':    {bg:'var(--sky)',   fg:'var(--night)'},
+  'Waiting on Content': {bg:'var(--sand)',  fg:'var(--night)'},
+};
+function genericPill(label, styleMap){
+  if(!label) return `<span class="pill" style="background:var(--paper);color:var(--stone)">&mdash;</span>`;
+  const style = styleMap[label] || {bg:'var(--stone)', fg:'#fff'};
+  return `<span class="pill" style="background:${style.bg};color:${style.fg}">${esc(label)}</span>`;
+}
 
-function renderTier3(){
-  document.getElementById('tier3Grid').innerHTML = tier3Groups.map(g=>{
-    const rows = g.items.map(i=>`
-      <div class="task-row">
-        <span>${i}</span>
-        <span class="task-status ts-na" style="background:var(--paper);color:var(--stone)">No status</span>
-      </div>`).join('');
+function buildNewsletterRows(items){
+  return items.map(it => {
+    const cv = it.column_values || {};
+    return {
+      edition: (it.group && it.group.title) || '',
+      item: it.name,
+      status: cv.color_mm4m5t26 || '',
+      collaborator: cv.multiple_person_mm4t5yxh || '',
+      owner: cv.multiple_person_mm4mqxb2 || '',
+      due: cv.date_mm4mq10d || null,
+    };
+  });
+}
+
+let newsletterRows = [];
+let newsletterSortKey = null, newsletterSortAsc = true;
+
+function renderNewsletterTable(){
+  let rows = newsletterRows.slice();
+  if(newsletterSortKey){
+    rows.sort((a,b) => {
+      let av = a[newsletterSortKey] || '', bv = b[newsletterSortKey] || '';
+      if(av < bv) return newsletterSortAsc ? -1 : 1;
+      if(av > bv) return newsletterSortAsc ? 1 : -1;
+      return 0;
+    });
+  }
+  const body = document.getElementById('newsletterBody');
+  if(rows.length === 0){
+    body.innerHTML = `<tr><td colspan="6" class="empty-state">No newsletter content items found.</td></tr>`;
+    return;
+  }
+  body.innerHTML = rows.map(r => `
+    <tr>
+      <td><span class="area-chip">${esc(r.edition)}</span></td>
+      <td class="item-name">${esc(r.item)}</td>
+      <td>${genericPill(r.status, NEWSLETTER_STATUS_STYLE)}</td>
+      <td>${esc(r.collaborator || '—')}</td>
+      <td>${esc(r.owner || '—')}</td>
+      <td>${formatDate(r.due)}</td>
+    </tr>`).join('');
+}
+
+/* ---- Monthly customer comms: email sends to current customers ---- */
+const EMAIL_STATUS_STYLE = {
+  'Sent':                          {bg:'var(--vine)',  fg:'#fff'},
+  'Scheduled':                     {bg:'var(--blue)',  fg:'#fff'},
+  'Working on it':                 {bg:'var(--honey)', fg:'var(--night)'},
+  'Stuck':                         {bg:'var(--lava)',  fg:'#fff'},
+  'Content':                       {bg:'var(--grape)', fg:'#fff'},
+  'Review Content':                {bg:'var(--grape)', fg:'#fff'},
+  'Clone Template':                {bg:'var(--sky)',   fg:'var(--night)'},
+  'Approved Ready For Hubspot':    {bg:'var(--sand)',  fg:'var(--night)'},
+  'Approved Ready For Schedule':   {bg:'var(--dew)',   fg:'#0a6b34'},
+  'Ready but waiting on list':     {bg:'var(--honey)', fg:'var(--night)'},
+  'On Hold':                       {bg:'var(--grey)',  fg:'#fff'},
+};
+const CHANNEL_STYLE = {
+  'Automated email': {bg:'var(--blue)', fg:'#fff'},
+  'Campaign email':  {bg:'var(--vine)', fg:'#fff'},
+};
+function channelFromGroup(title){
+  return /automated/i.test(title || '') ? 'Automated email' : 'Campaign email';
+}
+
+let emailRows = [];
+let emailFilter = 'All';
+let emailSortKey = 'sendDate', emailSortAsc = true;
+
+function buildEmailRows(items){
+  return items.map(it => {
+    const cv = it.column_values || {};
+    return {
+      item: it.name,
+      brand: cv.status__1 || '',
+      audience: cv.status_12 || '',
+      sendDate: cv.date || null,
+      dueDate: cv.date_mks7mh1r || null,
+      campaign: cv.dropdown_mm1cac03 || '',
+      status: cv.status8 || '',
+      channel: channelFromGroup((it.group && it.group.title) || ''),
+    };
+  });
+}
+
+function renderChannelFilters(){
+  const channels = ['All', ...new Set(emailRows.map(r => r.channel))];
+  document.getElementById('channelFilters').innerHTML = channels.map(c =>
+    `<button class="filter-btn ${c===emailFilter?'active':''}" data-channel="${esc(c)}">${esc(c)}</button>`
+  ).join('');
+  document.querySelectorAll('#channelFilters .filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      emailFilter = btn.dataset.channel;
+      renderChannelFilters();
+      renderEmailTable();
+    });
+  });
+}
+
+function renderEmailTable(){
+  let rows = emailFilter === 'All' ? emailRows.slice() : emailRows.filter(r => r.channel === emailFilter);
+  rows.sort((a,b) => {
+    let av = a[emailSortKey], bv = b[emailSortKey];
+    if(av == null && bv == null) return 0;
+    if(av == null) return 1;
+    if(bv == null) return -1;
+    if(av < bv) return emailSortAsc ? -1 : 1;
+    if(av > bv) return emailSortAsc ? 1 : -1;
+    return 0;
+  });
+  const body = document.getElementById('emailBody');
+  if(rows.length === 0){
+    body.innerHTML = `<tr><td colspan="7" class="empty-state">No matching sends.</td></tr>`;
+    return;
+  }
+  body.innerHTML = rows.map(r => {
+    const chStyle = CHANNEL_STYLE[r.channel] || {bg:'var(--stone)', fg:'#fff'};
     return `
-      <div class="rcard">
-        <div class="rcard-top">
-          <div class="rcard-name">${g.name}</div>
-          <div class="rcard-pct" style="color:var(--stone)">—</div>
-        </div>
-        <div class="progress-track"><div class="seg" style="width:100%;background:var(--paper)"></div></div>
-        <div class="rcard-note">${g.items.length} item · not started, no marketer assigned</div>
-        <div class="rcard-detail" style="display:block;margin-top:10px;">${rows}</div>
-      </div>`;
+    <tr>
+      <td><span class="pill" style="background:${chStyle.bg};color:${chStyle.fg}">${esc(r.channel)}</span></td>
+      <td class="item-name">${esc(r.item)}</td>
+      <td>${r.campaign ? `<span class="area-chip">${esc(r.campaign)}</span>` : ''}</td>
+      <td>${esc(r.audience || '—')}</td>
+      <td>${esc(r.brand || '—')}</td>
+      <td>${genericPill(r.status, EMAIL_STATUS_STYLE)}</td>
+      <td>${formatDate(r.sendDate)}</td>
+    </tr>`;
   }).join('');
 }
 
-// ---- Tab switching ----
-document.querySelectorAll('.tab-btn').forEach(btn=>{
-  btn.addEventListener('click', ()=>{
-    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-    document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
-    btn.classList.add('active');
-    document.getElementById('tab-'+btn.dataset.tab).classList.add('active');
+document.querySelectorAll('#emailTable thead th').forEach(th => {
+  th.addEventListener('click', () => {
+    const key = th.dataset.key;
+    if(emailSortKey === key){ emailSortAsc = !emailSortAsc; } else { emailSortKey = key; emailSortAsc = true; }
+    renderEmailTable();
+  });
+});
+document.querySelectorAll('#newsletterTable thead th').forEach(th => {
+  th.addEventListener('click', () => {
+    const key = th.dataset.key;
+    if(newsletterSortKey === key){ newsletterSortAsc = !newsletterSortAsc; } else { newsletterSortKey = key; newsletterSortAsc = true; }
+    renderNewsletterTable();
   });
 });
 
-renderKpis();
-renderFilters();
-renderTable();
-renderReadiness();
-renderTier2();
-renderTier3();
+function renderCommsKpis(newsletterRows, filteredEmailRows){
+  const inProgress = newsletterRows.filter(r => r.status && r.status !== 'Done').length;
+  const automated = filteredEmailRows.filter(r => r.channel === 'Automated email').length;
+  const campaigns = filteredEmailRows.filter(r => r.channel === 'Campaign email').length;
+  const kpis = [
+    {num: newsletterRows.length, label:'Newsletter content items (current editions)', cls:'blue'},
+    {num: campaigns, label:'Customer campaign emails', cls:'vine'},
+    {num: automated, label:'Automated customer emails', cls:'grape'},
+  ];
+  document.getElementById('commsKpiRow').innerHTML = kpis.map(k => `
+    <div class="kpi ${k.cls}">
+      <div class="num">${k.num}</div>
+      <div class="label">${k.label}</div>
+    </div>`).join('');
+}
+
+/* ---- Tab switching ---- */
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+  });
+});
+
+/* ---- Sub-tab switching (within Overview) ---- */
+document.querySelectorAll('.subtab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.subtab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.subtab-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('subtab-' + btn.dataset.subtab).classList.add('active');
+  });
+});
+
+/* ---- Render everything from the static snapshot data ---- */
+function renderAll(){
+  // Overview
+  overviewRows = buildOverviewRows(OVERVIEW_ITEMS);
+  renderKpis();
+  renderFilters();
+  renderTable();
+  document.getElementById('overviewSub').innerHTML =
+    `${OVERVIEW_ITEMS.length} initiatives across T1, T2, and T3 &middot; <a class="board-link" href="${boardUrl(OVERVIEW_BOARD)}" target="_blank">open board in monday.com &rarr;</a>`;
+
+  // Tier 1 readiness
+  const tier1Groups = groupTier1(TIER1_ITEMS, TIER1_GROUPS);
+  renderReadinessGrid('readinessGrid', tier1Groups);
+  const emptyGroups = tier1Groups.filter(g => g.noItems);
+  document.getElementById('tier1Sub').innerHTML =
+    `${tier1Groups.length} groups on the board &middot; <a class="board-link" href="${boardUrl(TIER1_BOARD)}" target="_blank">open board in monday.com &rarr;</a>`;
+  document.getElementById('tier1Footnote').textContent = emptyGroups.length
+    ? `${emptyGroups.length} of ${tier1Groups.length} groups (${emptyGroups.map(g=>g.name).join(', ')}) have no checklist items created on the board yet.`
+    : '';
+
+  // Tier 2
+  const tier2Groups = simpleGroup(TIER2_ITEMS);
+  renderSimpleGrid('tier2Grid', tier2Groups);
+  document.getElementById('tier2Sub').innerHTML =
+    `${tier2Groups.length} groups &middot; ${TIER2_ITEMS.length} items &middot; <a class="board-link" href="${boardUrl(TIER2_BOARD)}" target="_blank">open board in monday.com &rarr;</a>`;
+  document.getElementById('tier2Footnote').textContent = '';
+
+  // Tier 3
+  const tier3Groups = simpleGroup(TIER3_ITEMS);
+  renderSimpleGrid('tier3Grid', tier3Groups);
+  document.getElementById('tier3Sub').innerHTML =
+    `${tier3Groups.length} groups &middot; ${TIER3_ITEMS.length} items &middot; <a class="board-link" href="${boardUrl(TIER3_BOARD)}" target="_blank">open board in monday.com &rarr;</a>`;
+  document.getElementById('tier3Footnote').textContent = '';
+
+  // Monthly customer comms
+  newsletterRows = buildNewsletterRows(NEWSLETTER_ITEMS);
+  renderNewsletterTable();
+  const editionCount = new Set(newsletterRows.map(r => r.edition)).size;
+  document.getElementById('newsletterSub').innerHTML =
+    `${NEWSLETTER_ITEMS.length} content items across ${editionCount} edition${editionCount===1?'':'s'} (sent editions excluded) &middot; <a class="board-link" href="${boardUrl(NEWSLETTER_BOARD)}" target="_blank">open board in monday.com &rarr;</a>`;
+
+  emailRows = buildEmailRows(EMAIL_ITEMS);
+  renderChannelFilters();
+  renderEmailTable();
+  document.getElementById('emailSub').innerHTML =
+    `${emailRows.length} upcoming sends targeting current customers &middot; <a class="board-link" href="${boardUrl(EMAIL_BOARD)}" target="_blank">open board in monday.com &rarr;</a>`;
+
+  renderCommsKpis(newsletterRows, emailRows);
+}
+
+renderAll();
 </script>
 
 </body>
