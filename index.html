@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Rentvine Marketing Status Dashboard</title>
+<style>
+  /* Manrope = titles/subtitles/buttons per brand guide; system sans stands in for Hando (body face). No external font requests, so this renders without network access. */
+
+  :root{
+    --vine:#00A54F;
+    --dew:#CAF5DF;
+    --blue:#167FE1;
+    --sky:#BCE5FF;
+    --night:#111111;
+    --white:#FFFFFF;
+    --smoke:#494949;
+    --stone:#7E7E7E;
+    --grey:#B1B1B1;
+    --paper:#F1F1F1;
+    --grape:#984FE2;
+    --lavender:#C59AF1;
+    --lava:#F84848;
+    --coral:#FC8989;
+    --honey:#FFB31F;
+    --sand:#FFE6B7;
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:-apple-system,'Segoe UI',Roboto,sans-serif; /* body face — see Hando note above */
+    background:var(--paper);
+    color:var(--night);
+    padding:32px 40px 60px;
+  }
+  h1,h2,h3,.section-title,.kpi .label,thead th{font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-weight:700;}
+
+  .header{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    margin-bottom:28px;
+    flex-wrap:wrap;
+    gap:16px;
+  }
+  .wordmark{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-weight:700;
+    font-weight:800;
+    font-size:13px;
+    color:var(--vine);
+    margin-bottom:6px;
+    letter-spacing:.01em;
+  }
+  .wordmark .dot{
+    width:8px;height:8px;border-radius:2px;
+    background:var(--vine);
+    display:inline-block;
+    transform:rotate(45deg);
+  }
+  .header h1{
+    font-size:26px;
+    font-weight:800;
+    margin:0 0 4px;
+    font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-weight:700;
+  }
+  .header p{
+    margin:0;
+    color:var(--stone);
+    font-size:14px;
+  }
+  .sync-badge{
+    background:var(--night);
+    color:var(--white);
+    font-size:12px;
+    font-weight:600;
+    padding:6px 12px;
+    border-radius:20px;
+    white-space:nowrap;
+  }
+
+  .kpi-row{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:14px;
+    margin-bottom:32px;
+  }
+  .kpi{
+    background:var(--white);
+    border-radius:14px;
+    padding:18px 20px;
+    border:1px solid #e4e4e4;
+  }
+  .kpi .num{
+    font-size:28px;
+    font-weight:800;
+    line-height:1;
+  }
+  .kpi .label{
+    font-size:13px;
+    color:var(--stone);
+    margin-top:6px;
+    font-weight:600;
+  }
+  .kpi.vine .num{color:var(--vine);}
+  .kpi.blue .num{color:var(--blue);}
+  .kpi.risk .num{color:var(--lava);}
+  .kpi.grape .num{color:var(--grape);}
+
+  .section{
+    background:var(--white);
+    border-radius:16px;
+    padding:24px 26px 28px;
+    margin-bottom:28px;
+    border:1px solid #e4e4e4;
+  }
+  .section-title{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:16px;
+    flex-wrap:wrap;
+    gap:10px;
+  }
+  .section-title h2{
+    font-size:18px;
+    margin:0;
+    font-weight:800;
+  }
+  .section-title .sub{
+    font-size:13px;
+    color:var(--stone);
+    margin-top:2px;
+  }
+
+  .filters{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+  }
+  .filter-btn{
+    border:1px solid #ddd;
+    background:var(--white);
+    color:var(--smoke);
+    font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-weight:700;
+    font-size:12px;
+    font-weight:600;
+    padding:6px 12px;
+    border-radius:20px;
+    cursor:pointer;
+    transition:all .15s;
+    text-transform:lowercase;
+  }
+  .filter-btn:hover{border-color:var(--blue);}
+  .filter-btn.active{
+    background:var(--night);
+    color:var(--white);
+    border-color:var(--night);
+  }
+
+  table{
+    width:100%;
+    border-collapse:collapse;
+    font-size:13.5px;
+  }
+  thead th{
+    text-align:left;
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:.03em;
+    color:var(--stone);
+    padding:8px 10px;
+    border-bottom:2px solid var(--paper);
+    cursor:pointer;
+    user-select:none;
+    white-space:nowrap;
+  }
+  thead th:hover{color:var(--night);}
+  tbody tr{
+    border-bottom:1px solid var(--paper);
+    transition:background .1s;
+  }
+  tbody tr:hover{background:#fafafa;}
+  tbody td{
+    padding:10px;
+    vertical-align:middle;
+  }
+  .item-name{font-weight:700;}
+  .tier-badge{
+    font-size:10px;
+    font-weight:800;
+    padding:2px 7px;
+    border-radius:6px;
+    background:var(--paper);
+    color:var(--stone);
+  }
+  .tier-badge.major{background:#ffe1e1;color:#c92a2a;}
+  .tier-badge.medium{background:var(--sand);color:#8a5a00;}
+  .tier-badge.minor{background:var(--sky);color:var(--blue);}
+
+  .pill{
+    display:inline-block;
+    font-size:11.5px;
+    font-weight:700;
+    padding:4px 10px;
+    border-radius:20px;
+    white-space:nowrap;
+  }
+  .status-openbeta{background:var(--vine);color:var(--white);}
+  .status-closedbeta{background:var(--blue);color:var(--white);}
+  .status-ontrack{background:var(--honey);color:var(--night);}
+  .status-atrisk{background:var(--lava);color:var(--white);}
+  .status-research{background:var(--grape);color:var(--white);}
+  .status-notstarted{background:var(--grey);color:var(--white);}
+
+  .area-chip{
+    font-size:11px;
+    font-weight:700;
+    padding:3px 9px;
+    border-radius:6px;
+    background:var(--dew);
+    color:#0a6b34;
+  }
+
+  /* Marketing readiness cards */
+  .readiness-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+    gap:14px;
+  }
+  .rcard{
+    border:1px solid #e4e4e4;
+    border-radius:12px;
+    padding:14px 16px;
+    transition:box-shadow .15s, border-color .15s;
+  }
+  .rcard:hover{
+    box-shadow:0 4px 14px rgba(0,0,0,.06);
+    border-color:var(--blue);
+  }
+  .rcard.highlight{
+    border-color:var(--vine);
+    background:linear-gradient(180deg,#fff, #f4fdf8);
+  }
+  .rcard-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    margin-bottom:8px;
+  }
+  .rcard-name{font-weight:800;font-size:14px;}
+  .rcard-pct{font-weight:800;font-size:14px;color:var(--vine);}
+  .progress-track{
+    height:8px;
+    background:var(--paper);
+    border-radius:10px;
+    overflow:hidden;
+    display:flex;
+    margin-bottom:8px;
+  }
+  .seg{height:100%;}
+  .rcard-note{
+    font-size:12px;
+    color:var(--stone);
+    line-height:1.4;
+  }
+  .rcard-detail{
+    margin-top:10px;
+    padding-top:10px;
+    border-top:1px solid var(--paper);
+    display:none;
+  }
+  .rcard.open .rcard-detail{display:block;}
+  .task-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:4px 0;
+    font-size:12.5px;
+  }
+  .task-status{
+    font-size:10px;
+    font-weight:800;
+    padding:2px 7px;
+    border-radius:10px;
+  }
+  .ts-complete{background:var(--vine);color:#fff;}
+  .ts-review{background:var(--grape);color:#fff;}
+  .ts-progress{background:var(--honey);color:var(--night);}
+  .ts-not{background:var(--grey);color:#fff;}
+  .ts-na{background:var(--paper);color:var(--stone);}
+
+  .legend{
+    display:flex;
+    gap:16px;
+    flex-wrap:wrap;
+    font-size:12px;
+    color:var(--stone);
+    margin-top:14px;
+  }
+  .legend span{display:flex;align-items:center;gap:6px;}
+  .dot{width:9px;height:9px;border-radius:50%;display:inline-block;}
+
+  .footnote{
+    font-size:12px;
+    color:var(--stone);
+    margin-top:6px;
+  }
+
+  .tab-nav{
+    display:flex;
+    gap:6px;
+    margin-bottom:24px;
+    border-bottom:2px solid #e4e4e4;
+  }
+  .tab-btn{
+    font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-weight:700;
+    font-size:14px;
+    font-weight:700;
+    color:var(--stone);
+    background:none;
+    border:none;
+    padding:10px 18px;
+    cursor:pointer;
+    border-bottom:3px solid transparent;
+    margin-bottom:-2px;
+    text-transform:lowercase;
+  }
+  .tab-btn:hover{color:var(--night);}
+  .tab-btn.active{
+    color:var(--vine);
+    border-bottom-color:var(--vine);
+  }
+  .tab-panel{display:none;}
+  .tab-panel.active{display:block;}
+  .board-link{
+    font-size:12px;
+    color:var(--blue);
+    text-decoration:none;
+    font-weight:600;
+  }
+  .board-link:hover{text-decoration:underline;}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <div class="wordmark"><span class="dot"></span>rentvine</div>
+    <h1>Product Marketing Status Dashboard</h1>
+    <p>Product roadmap + release tier tracking, pulled from monday.com</p>
+  </div>
+  <div class="sync-badge">Synced from monday.com</div>
+</div>
+
+<div class="kpi-row" id="kpiRow"></div>
+
+<div class="tab-nav">
+  <button class="tab-btn active" data-tab="overview">overview gtm tracker</button>
+  <button class="tab-btn" data-tab="tier1">release tier 1</button>
+  <button class="tab-btn" data-tab="tier2">release tier 2</button>
+  <button class="tab-btn" data-tab="tier3">release tier 3</button>
+</div>
+
+<!-- TAB: OVERVIEW -->
+<div class="tab-panel active" id="tab-overview">
+<div class="section">
+  <div class="section-title">
+    <div>
+      <h2>Overview GTM tracker</h2>
+      <div class="sub">28 initiatives across T1 – Major, T2 – Medium, and T3 – Minor · <a class="board-link" href="https://rentvine.monday.com/boards/18421987602" target="_blank">open board in monday.com →</a></div>
+    </div>
+    <div class="filters" id="statusFilters"></div>
+  </div>
+  <table id="roadmapTable">
+    <thead>
+      <tr>
+        <th data-key="tier">Tier</th>
+        <th data-key="item">Item</th>
+        <th data-key="area">Area</th>
+        <th data-key="pm">Product manager</th>
+        <th data-key="status">Status</th>
+        <th data-key="ga">Target GA</th>
+        <th data-key="launch">Target launch</th>
+      </tr>
+    </thead>
+    <tbody id="roadmapBody"></tbody>
+  </table>
+</div>
+</div>
+
+<!-- TAB: RELEASE TIER 1 -->
+<div class="tab-panel" id="tab-tier1">
+<div class="section">
+  <div class="section-title">
+    <div>
+      <h2>Release Tier 1 — marketing launch readiness</h2>
+      <div class="sub">All 18 groups from the board shown below · full breakdown per card · <a class="board-link" href="https://rentvine.monday.com/boards/18421982964" target="_blank">open board in monday.com →</a></div>
+    </div>
+  </div>
+  <div class="readiness-grid" id="readinessGrid"></div>
+  <div class="legend">
+    <span><span class="dot" style="background:var(--vine)"></span>Complete</span>
+    <span><span class="dot" style="background:var(--grape)"></span>In review</span>
+    <span><span class="dot" style="background:var(--honey)"></span>In progress</span>
+    <span><span class="dot" style="background:var(--grey)"></span>Not started</span>
+    <span><span class="dot" style="background:var(--paper);border:1px solid #ddd"></span>N/A</span>
+  </div>
+  <div class="footnote">11 of the 18 groups (Corporate Accounting, Owner Drip Campaigns, Fixie Pro, Emergency Contact Center, End-to-End Income Verification, Owner Tasks/Workflows, Unified Comms, Built-in Pre-Screening, Document Fraud Detection, MCP, Resident Mobile: Chat) have no checklist items created on the board yet.</div>
+</div>
+</div>
+
+<!-- TAB: RELEASE TIER 2 -->
+<div class="tab-panel" id="tab-tier2">
+<div class="section">
+  <div class="section-title">
+    <div>
+      <h2>Release Tier 2</h2>
+      <div class="sub">4 groups · 20 items · no status, marketer, or dates set on any item yet · <a class="board-link" href="https://rentvine.monday.com/boards/18397622866" target="_blank">open board in monday.com →</a></div>
+    </div>
+  </div>
+  <div class="readiness-grid" id="tier2Grid"></div>
+  <div class="footnote">This board (separate workspace from Release Tier 1/3) is currently a planning template — every item across all four groups has an empty Marketer, Campaign, Category, Status, Product, Target Launch, and Target GA field. Nothing has been marked as started.</div>
+</div>
+</div>
+
+<!-- TAB: RELEASE TIER 3 -->
+<div class="tab-panel" id="tab-tier3">
+<div class="section">
+  <div class="section-title">
+    <div>
+      <h2>Release Tier 3</h2>
+      <div class="sub">5 groups · 5 items · no status, marketer, or dates set on any item yet · <a class="board-link" href="https://rentvine.monday.com/boards/18422010041" target="_blank">open board in monday.com →</a></div>
+    </div>
+  </div>
+  <div class="readiness-grid" id="tier3Grid"></div>
+  <div class="footnote">Each group on this board (Markups & Discounts on Created Bills, PM Mobile App - Move out status (read only), Internal Maintenance v2, TLL - Resident "Opt-in" from Resident Portal, PM Mobile: Notes and Alerts Tagging) contains a single "Blog - Release Notes" item with no Marketer, Campaign, Category, Status, Product, Target Launch, or Target GA set.</div>
+</div>
+</div>
+
+
+<script>
+const roadmap = [
+  {tier:"T1", item:"Custom Scoring Matrix", area:"Screening", pm:"Katie Palinchak", status:"Open Beta", ga:"Jun 18", launch:"Q3"},
+  {tier:"T1", item:"Rentvine Reconciliation 2.0", area:"Accounting", pm:"Robert Desotelle", status:"Open Beta", ga:"Jul 29", launch:"Q3"},
+  {tier:"T1", item:"Owner Lead Portal", area:"CRM", pm:"Dallin Welch", status:"On Track", ga:"Jul 31", launch:"Q3"},
+  {tier:"T1", item:"New Support Experience", area:"Support", pm:"Bekah Kohls", status:"On Track", ga:"Aug 31", launch:"Q3"},
+  {tier:"T1", item:"HOME by Rentvine", area:"REP", pm:"Sean Oh", status:"On Track", ga:"Sep 1", launch:"Q3"},
+  {tier:"T1", item:"Document Fraud Detection", area:"Screening", pm:"Katie Palinchak", status:"Research & Discovery", ga:"Sep 30", launch:"Q4"},
+  {tier:"T1", item:"Corporate Accounting", area:"Accounting", pm:"Robert Desotelle", status:"Research & Discovery", ga:"Oct 1", launch:"Q4"},
+  {tier:"T1", item:"Fixie Pro - Maintenance Intake with Voice", area:"AI", pm:"Heraíd Castillo", status:"At Risk", ga:"Oct 5", launch:"Q4"},
+  {tier:"T1", item:"Emergency Contact Center", area:"AI", pm:"Heraíd Castillo", status:"At Risk", ga:"Oct 5", launch:"Q4"},
+  {tier:"T1", item:"Maintenance Command Center", area:"AI", pm:"Heraíd Castillo", status:"On Track", ga:"Oct 5", launch:"Q4"},
+  {tier:"T1", item:"Owner Tasks/Workflows", area:"CRM", pm:"Dallin Welch", status:"Research & Discovery", ga:"Oct 30", launch:"Q4"},
+  {tier:"T1", item:"Owner Drip Campaigns", area:"CRM", pm:"Dallin Welch", status:"Research & Discovery", ga:"Nov 30", launch:"Q4"},
+  {tier:"T1", item:"End-to-End Income Verification", area:"Screening", pm:"Katie Palinchak", status:"Research & Discovery", ga:"Nov 30", launch:"Q1"},
+  {tier:"T1", item:"Unified Communications", area:"Comms", pm:"Jesse Monteiro", status:"Research & Discovery", ga:"Dec 12", launch:"Q1"},
+  {tier:"T1", item:"Built-in Pre-screening", area:"Screening", pm:"Katie Palinchak", status:"Not started", ga:"Jan 1, 2027", launch:"Q1"},
+  {tier:"T1", item:"Resident App", area:"Mobile", pm:"Sara Nachman", status:"On Track", ga:"Jan 1, 2027", launch:"Q1"},
+  {tier:"T1", item:"MCP", area:"AI", pm:"Dallin Welch", status:"Closed Beta", ga:"Jan 1, 2027", launch:"Q1"},
+  {tier:"T1", item:"Mobile: Push Notifications", area:"Mobile", pm:"Sara Nachman", status:"On Track", ga:"Nov 30", launch:"Q1"},
+  {tier:"T1", item:"Resident Mobile: Chat", area:"Mobile", pm:"Sara Nachman", status:"Research & Discovery", ga:"Jan 1, 2027", launch:"Q1"},
+  {tier:"T2", item:"Combined Offer / Rentsign Stages", area:"Leasing", pm:"Jesse Monteiro", status:"On Track", ga:"Jul 14", launch:"Q3"},
+  {tier:"T2", item:"PM Mobile App - Maintenance Estimates", area:"Mobile", pm:"Sara Nachman", status:"On Track", ga:"Jul 31", launch:"Q3"},
+  {tier:"T2", item:"Positive Credit Reporting", area:"REP", pm:"Sean Oh", status:"At Risk", ga:"Sep 1", launch:"Q3"},
+  {tier:"T2", item:"Speed to Lead", area:"CRM", pm:"Dallin Welch", status:"Not started", ga:"Sep 15", launch:"Q4"},
+  {tier:"T3", item:'PM Mobile App - Move out status (read only)', area:"Mobile", pm:"Sara Nachman", status:"On Track", ga:"Jul 10", launch:"Q3"},
+  {tier:"T3", item:"Internal Maintenance v2", area:"Maintenance", pm:"Heraíd Castillo", status:"On Track", ga:"Aug 3", launch:"Q3"},
+  {tier:"T3", item:"PM Mobile: Notes and Alerts Tagging", area:"Mobile", pm:"Sara Nachman", status:"On Track", ga:"Aug 10", launch:"Q3"},
+  {tier:"T3", item:"Markups & Discounts on Created Billls", area:"Accounting", pm:"Robert Desotelle", status:"At Risk", ga:"Oct 1", launch:"Q4"},
+  {tier:"T3", item:'TLL - Resident "Opt-in" from Resident Portal', area:"REP", pm:"Sean Oh", status:"Research & Discovery", ga:"Jan 1, 2027", launch:"Q4"},
+];
+
+const statusClass = {
+  "Open Beta":"status-openbeta",
+  "Closed Beta":"status-closedbeta",
+  "On Track":"status-ontrack",
+  "At Risk":"status-atrisk",
+  "Research & Discovery":"status-research",
+  "Not started":"status-notstarted"
+};
+
+function renderKpis(){
+  const total = roadmap.length;
+  const onTrack = roadmap.filter(r=>["On Track","Open Beta","Closed Beta"].includes(r.status)).length;
+  const atRisk = roadmap.filter(r=>r.status==="At Risk").length;
+  const research = roadmap.filter(r=>r.status==="Research & Discovery").length;
+  const kpis = [
+    {num:total, label:"Total initiatives tracked", cls:"blue"},
+    {num:onTrack, label:"On track / in beta", cls:"vine"},
+    {num:atRisk, label:"At risk", cls:"risk"},
+    {num:research, label:"In research & discovery", cls:"grape"},
+  ];
+  document.getElementById('kpiRow').innerHTML = kpis.map(k=>`
+    <div class="kpi ${k.cls}">
+      <div class="num">${k.num}</div>
+      <div class="label">${k.label}</div>
+    </div>`).join('');
+}
+
+let currentFilter = "All";
+let sortKey = null;
+let sortAsc = true;
+
+function renderFilters(){
+  const statuses = ["All", ...new Set(roadmap.map(r=>r.status))];
+  document.getElementById('statusFilters').innerHTML = statuses.map(s=>
+    `<button class="filter-btn ${s===currentFilter?'active':''}" data-status="${s}">${s}</button>`
+  ).join('');
+  document.querySelectorAll('.filter-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      currentFilter = btn.dataset.status;
+      renderFilters();
+      renderTable();
+    });
+  });
+}
+
+function renderTable(){
+  let rows = currentFilter==="All" ? roadmap.slice() : roadmap.filter(r=>r.status===currentFilter);
+  if(sortKey){
+    rows.sort((a,b)=>{
+      let av=a[sortKey], bv=b[sortKey];
+      if(av<bv) return sortAsc?-1:1;
+      if(av>bv) return sortAsc?1:-1;
+      return 0;
+    });
+  }
+  document.getElementById('roadmapBody').innerHTML = rows.map(r=>`
+    <tr>
+      <td><span class="tier-badge ${r.tier==='T1'?'major':r.tier==='T2'?'medium':'minor'}">${r.tier}</span></td>
+      <td class="item-name">${r.item}</td>
+      <td><span class="area-chip">${r.area}</span></td>
+      <td>${r.pm}</td>
+      <td><span class="pill ${statusClass[r.status]||''}">${r.status}</span></td>
+      <td>${r.ga}</td>
+      <td>${r.launch}</td>
+    </tr>`).join('');
+}
+
+document.querySelectorAll('#roadmapTable thead th').forEach(th=>{
+  th.addEventListener('click', ()=>{
+    const key = th.dataset.key;
+    if(sortKey===key){ sortAsc=!sortAsc; } else { sortKey=key; sortAsc=true; }
+    renderTable();
+  });
+});
+
+// ---- Marketing readiness data ----
+const readiness = [
+  {
+    name:"HOME by Rentvine",
+    highlight:true,
+    note:"6 of 11 assets touched — 2 complete, 1 in review, 3 in progress.",
+    tasks:[
+      {n:"GTM Campaign & Positioning Brief", s:"progress"},
+      {n:"Customer email", s:"complete"},
+      {n:"Prospect email", s:"complete"},
+      {n:"Blog post", s:"review"},
+      {n:"Add to Sales Hub", s:"not"},
+      {n:"Animation video", s:"not"},
+      {n:"Social post", s:"not"},
+      {n:"Add new web page or update existing", s:"progress"},
+      {n:"Feature in website nav", s:"not"},
+      {n:"Paid ad campaign", s:"not"},
+      {n:"Press release & PR Outreach", s:"progress"},
+    ]
+  },
+  {
+    name:"Custom Scoring Matrix",
+    note:"GTM brief in progress; 3 assets marked N/A for this launch.",
+    tasks:[
+      {n:"GTM Campaign & Positioning Brief", s:"progress"},
+      {n:"Customer email", s:"not"},
+      {n:"Prospect email", s:"not"},
+      {n:"Blog post", s:"not"},
+      {n:"Add to Sales Hub", s:"not"},
+      {n:"Animation video", s:"not"},
+      {n:"Social post", s:"not"},
+      {n:"Add new web page or update existing", s:"not"},
+      {n:"Feature in website nav", s:"na"},
+      {n:"Paid ad campaign", s:"na"},
+      {n:"Press release & PR Outreach", s:"na"},
+    ]
+  },
+  {
+    name:"Owner Lead Portal",
+    note:"Checklist created, all 11 assets still queued.",
+    tasks:Array(11).fill(0).map((_,i)=>({n:["GTM Campaign & Positioning Brief","Customer email","Prospect email","Blog post","Add to Sales Hub","Animation video","Social post","Add new web page or update existing","Feature in website nav","Paid ad campaign","Press release & PR Outreach"][i], s:"not"}))
+  },
+  {
+    name:"Rentvine Reconciliation 2.0",
+    highlight:true,
+    note:"Most advanced checklist on the board — 7 of 11 assets complete.",
+    tasks:[
+      {n:"GTM Campaign & Positioning Brief", s:"complete"},
+      {n:"Customer Email", s:"complete"},
+      {n:"Prospect Email", s:"complete"},
+      {n:"Blog Post", s:"complete"},
+      {n:"Add to Sales Hub", s:"progress"},
+      {n:"Animation Video", s:"complete"},
+      {n:"Social Post", s:"complete"},
+      {n:"Add new web page or update existing", s:"progress"},
+      {n:"Feature in website nav", s:"not"},
+      {n:"Paid ad campaign", s:"na"},
+      {n:"Press Release & PR Outreach", s:"na"},
+    ]
+  },
+  {
+    name:"Maintenance Command Center",
+    note:"Checklist created, all 11 assets confirmed not started.",
+    tasks:["GTM Campaign & Positioning Brief","Customer email","Prospect email","Blog post","Add to Sales Hub","Animation video","Social post","Add new web page or update existing","Feature in website nav","Paid ad campaign","Press release & PR Outreach"].map(n=>({n, s:"not"}))
+  },
+  {
+    name:"Resident App",
+    note:"Checklist created, all 11 assets confirmed not started.",
+    tasks:["GTM Campaign & Positioning Brief","Customer email","Prospect email","Blog post","Add to Sales Hub","Animation video","Social post","Add new web page or update existing","Feature in website nav","Paid ad campaign","Press release & PR Outreach"].map(n=>({n, s:"not"}))
+  },
+  {
+    name:"Mobile: Push Notifications",
+    note:"Checklist created, all 11 assets confirmed not started.",
+    tasks:["GTM Campaign & Positioning Brief","Customer email","Prospect email","Blog post","Add to Sales Hub","Animation video","Social post","Add new web page or update existing","Feature in website nav","Paid ad campaign","Press release & PR Outreach"].map(n=>({n, s:"not"}))
+  },
+  {name:"Corporate Accounting", note:"No items in this group yet.", tasks:[], noItems:true},
+  {name:"Owner Drip Campaigns", note:"No items in this group yet.", tasks:[], noItems:true},
+  {name:"Fixie Pro - Maintenance Intake with Voice", note:"No items in this group yet.", tasks:[], noItems:true},
+  {name:"Emergency Contact Center", note:"No items in this group yet.", tasks:[], noItems:true},
+  {name:"End-to-End Income Verification", note:"No items in this group yet.", tasks:[], noItems:true},
+  {name:"Owner Tasks/Workflows", note:"No items in this group yet.", tasks:[], noItems:true},
+  {name:"Unified Comms", note:"No items in this group yet.", tasks:[], noItems:true},
+  {name:"Built-in Pre-Screening", note:"No items in this group yet.", tasks:[], noItems:true},
+  {name:"Document Fraud Detection", note:"No items in this group yet.", tasks:[], noItems:true},
+  {name:"MCP", note:"No items in this group yet.", tasks:[], noItems:true},
+  {name:"Resident Mobile: Chat", note:"No items in this group yet.", tasks:[], noItems:true},
+];
+
+const taskStatusClass = {complete:"ts-complete", review:"ts-review", progress:"ts-progress", not:"ts-not", na:"ts-na"};
+const taskStatusLabel = {complete:"Complete", review:"Review", progress:"In progress", not:"Not started", na:"N/A"};
+const segColor = {complete:"var(--vine)", review:"var(--grape)", progress:"var(--honey)", not:"var(--grey)", na:"var(--paper)"};
+
+function pctComplete(tasks){
+  const scored = tasks.filter(t=>t.s!=="na");
+  if(scored.length===0) return 0;
+  const weight = {complete:1, review:0.85, progress:0.4, not:0};
+  const sum = scored.reduce((a,t)=>a+weight[t.s],0);
+  return Math.round((sum/scored.length)*100);
+}
+
+function renderReadiness(){
+  const sorted = readiness.slice().sort((a,b)=>{
+    const pa = a.noItems ? -1 : pctComplete(a.tasks);
+    const pb = b.noItems ? -1 : pctComplete(b.tasks);
+    return pb - pa;
+  });
+  document.getElementById('readinessGrid').innerHTML = sorted.map((r,idx)=>{
+    if(r.noItems){
+      return `
+      <div class="rcard">
+        <div class="rcard-top">
+          <div class="rcard-name">${r.name}</div>
+          <div class="rcard-pct" style="color:var(--stone)">—</div>
+        </div>
+        <div class="progress-track"><div class="seg" style="width:100%;background:var(--paper)"></div></div>
+        <div class="rcard-note">${r.note}</div>
+      </div>`;
+    }
+    const pct = pctComplete(r.tasks);
+    const segs = r.tasks.map(t=>`<div class="seg" style="width:${100/r.tasks.length}%;background:${segColor[t.s]}"></div>`).join('');
+    const detailRows = r.tasks.map(t=>`
+      <div class="task-row">
+        <span>${t.n}</span>
+        <span class="task-status ${taskStatusClass[t.s]}">${taskStatusLabel[t.s]}</span>
+      </div>`).join('');
+    return `
+      <div class="rcard ${r.highlight?'highlight':''}" data-idx="${idx}">
+        <div class="rcard-top">
+          <div class="rcard-name">${r.name}</div>
+          <div class="rcard-pct">${pct}%</div>
+        </div>
+        <div class="progress-track">${segs}</div>
+        <div class="rcard-note">${r.note}</div>
+        <div class="rcard-detail" style="display:block;margin-top:10px;">${detailRows}</div>
+      </div>`;
+  }).join('');
+}
+
+// ---- Release Tier 2 data (all fields confirmed empty on the board) ----
+const tier2Groups = [
+  {
+    name:"Combined Offer / Rentsign Stages",
+    items:["GTM Campaign & Positioning Brief","Included in The Vine Newsletter","Blog post","Social Post","Update existing web page"]
+  },
+  {
+    name:"PM Mobile App Maintenance Estimates",
+    items:["GTM Campaign & Positioning Brief","Included in The Vine Newsletter","Blog post","Social Post","Update existing web page"]
+  },
+  {
+    name:"Positive Credit Reporting",
+    items:["GTM Campaign & Positioning Brief","Included in The Vine Newsletter","Blog post","Social Post","Update existing web page"]
+  },
+  {
+    name:"Speed to Lead",
+    items:["GTM Campaign & Positioning Brief","Included in The Vine Newsletter","Blog post","Social Post","Update existing web page"]
+  },
+];
+
+function renderTier2(){
+  document.getElementById('tier2Grid').innerHTML = tier2Groups.map(g=>{
+    const rows = g.items.map(i=>`
+      <div class="task-row">
+        <span>${i}</span>
+        <span class="task-status ts-na" style="background:var(--paper);color:var(--stone)">No status</span>
+      </div>`).join('');
+    return `
+      <div class="rcard">
+        <div class="rcard-top">
+          <div class="rcard-name">${g.name}</div>
+          <div class="rcard-pct" style="color:var(--stone)">—</div>
+        </div>
+        <div class="progress-track"><div class="seg" style="width:100%;background:var(--paper)"></div></div>
+        <div class="rcard-note">${g.items.length} items · none started, no marketer assigned</div>
+        <div class="rcard-detail" style="display:block;margin-top:10px;">${rows}</div>
+      </div>`;
+  }).join('');
+}
+
+// ---- Release Tier 3 data (all fields confirmed empty on the board) ----
+const tier3Groups = [
+  {name:"Markups & Discounts on Created Bills", items:["Blog - Release Notes"]},
+  {name:"PM Mobile App - Move out status (read only)", items:["Blog - Release Notes"]},
+  {name:"Internal Maintenance v2", items:["Blog - Release Notes"]},
+  {name:'TLL - Resident "Opt-in" from Resident Portal', items:["Blog - Release Notes"]},
+  {name:"PM Mobile: Notes and Alerts Tagging", items:["Blog - Release Notes"]},
+];
+
+function renderTier3(){
+  document.getElementById('tier3Grid').innerHTML = tier3Groups.map(g=>{
+    const rows = g.items.map(i=>`
+      <div class="task-row">
+        <span>${i}</span>
+        <span class="task-status ts-na" style="background:var(--paper);color:var(--stone)">No status</span>
+      </div>`).join('');
+    return `
+      <div class="rcard">
+        <div class="rcard-top">
+          <div class="rcard-name">${g.name}</div>
+          <div class="rcard-pct" style="color:var(--stone)">—</div>
+        </div>
+        <div class="progress-track"><div class="seg" style="width:100%;background:var(--paper)"></div></div>
+        <div class="rcard-note">${g.items.length} item · not started, no marketer assigned</div>
+        <div class="rcard-detail" style="display:block;margin-top:10px;">${rows}</div>
+      </div>`;
+  }).join('');
+}
+
+// ---- Tab switching ----
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-'+btn.dataset.tab).classList.add('active');
+  });
+});
+
+renderKpis();
+renderFilters();
+renderTable();
+renderReadiness();
+renderTier2();
+renderTier3();
+</script>
+
+</body>
+</html>
