@@ -351,6 +351,19 @@
     color:var(--stone);
     font-size:13px;
   }
+
+  .toggle-list-btn{
+    background:none;
+    border:none;
+    color:var(--blue);
+    font-weight:700;
+    font-size:12px;
+    cursor:pointer;
+    padding:2px 0 12px;
+    font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  }
+  .toggle-list-btn:hover{text-decoration:underline;}
+  .collapsible-body.collapsed{display:none;}
 </style>
 </head>
 <body>
@@ -380,6 +393,7 @@
 <div class="tab-nav">
   <button class="tab-btn active" data-tab="overview">product overview</button>
   <button class="tab-btn" data-tab="comms">customer comms</button>
+  <button class="tab-btn" data-tab="reviews">reviews</button>
 </div>
 
 <div class="tab-panel active" id="tab-overview">
@@ -519,6 +533,65 @@
 
 </div>
 
+<div class="tab-panel" id="tab-reviews">
+
+<div class="kpi-row" id="reviewsKpiRow"></div>
+
+<div class="section">
+  <div class="section-title">
+    <div>
+      <h2>Rentvine reviews</h2>
+      <div class="sub" id="reviewsRentvineSub"></div>
+    </div>
+    <div class="filters" id="reviewsRentvineFilters"></div>
+  </div>
+  <table id="reviewsRentvineTable">
+    <thead>
+      <tr>
+        <th data-key="source">Source</th>
+        <th data-key="reviewer">Reviewer</th>
+        <th data-key="rating">Rating</th>
+        <th data-key="highlight">Highlight</th>
+        <th data-key="company">Company</th>
+        <th data-key="territory">Territory</th>
+        <th data-key="date">Date</th>
+      </tr>
+    </thead>
+    <tbody id="reviewsRentvineBody"></tbody>
+    <tbody class="collapsible-body collapsed" id="reviewsRentvineExtraBody"></tbody>
+  </table>
+  <button class="toggle-list-btn" id="reviewsRentvineToggle" type="button">Show more reviews</button>
+</div>
+
+<div class="section">
+  <div class="section-title">
+    <div>
+      <h2>PMW reviews</h2>
+      <div class="sub" id="reviewsPmwSub"></div>
+    </div>
+    <div class="filters" id="reviewsPmwFilters"></div>
+  </div>
+  <table id="reviewsPmwTable">
+    <thead>
+      <tr>
+        <th data-key="source">Source</th>
+        <th data-key="reviewer">Reviewer</th>
+        <th data-key="rating">Rating</th>
+        <th data-key="highlight">Highlight</th>
+        <th data-key="company">Company</th>
+        <th data-key="territory">Territory</th>
+        <th data-key="date">Date</th>
+      </tr>
+    </thead>
+    <tbody id="reviewsPmwBody"></tbody>
+    <tbody class="collapsible-body collapsed" id="reviewsPmwExtraBody"></tbody>
+  </table>
+  <button class="toggle-list-btn" id="reviewsPmwToggle" type="button">Show more reviews</button>
+  <div class="footnote">Reviews tagged by source (Google or G2) from the <a class="board-link" href="https://rentvine.monday.com/boards/18407730790" target="_blank">Rentvine/PMW Reviews board</a>, split by brand group.</div>
+</div>
+
+</div>
+
 <script>
 function boardUrl(id){ return 'https://rentvine.monday.com/boards/' + id; }
 
@@ -546,6 +619,7 @@ const TIER2_BOARD = 18397622866;
 const TIER3_BOARD = 18422010041;
 const NEWSLETTER_BOARD = 18419184577;
 const EMAIL_BOARD = 7035266275;
+const REVIEWS_BOARD = 18407730790;
 
 const OVERVIEW_ITEMS = [
   {name:"Custom Scoring Matrix", group:{title:"T1 - MAJOR"}, column_values:{color_mm01fn79:"Screening", text_mm01mf9k:"Katie Palinchak", status:"Open Beta", date_mm0132d9:"2026-06-18", color_mm01h0a4:"Q3"}},
@@ -580,8 +654,6 @@ const OVERVIEW_ITEMS = [
 
 const TIER1_GROUPS = [
   {id:"g1", title:"New Product"},
-  {id:"g2", title:"Custom Scoring Matrix"},
-  {id:"g3", title:"Owner Lead Portal"},
   {id:"g4", title:"Rentvine Reconciliation 2.0"},
   {id:"g5", title:"REP"},
   {id:"g6", title:"Maintenance Command Center"},
@@ -607,8 +679,6 @@ function makeTier1Tasks(groupId, statuses){
 }
 
 const TIER1_ITEMS = [
-  ...makeTier1Tasks("g2", ["In progress","Not started","Not started","Not started","Not started","Not started","Not started","Not started","N/A","N/A","N/A"]),
-  ...makeTier1Tasks("g3", ["Not started","Not started","Not started","Not started","Not started","Not started","Not started","Not started","Not started","Not started","Not started"]),
   ...makeTier1Tasks("g4", ["Complete","Complete","Complete","Complete","In progress","Complete","Complete","In progress","Not started","N/A","N/A"]),
   ...makeTier1Tasks("g5", ["In progress","Complete","Complete","Review","Not started","Not started","Not started","In progress","Not started","Not started","In progress"]),
   ...makeTier1Tasks("g6", ["Not started","Not started","Not started","Not started","Not started","Not started","Not started","Not started","Not started","Not started","Not started"]),
@@ -617,26 +687,36 @@ const TIER1_ITEMS = [
 ];
 
 const TIER2_ITEMS = [
-  {name:"GTM Campaign & Positioning Brief", group:{title:"Combined Offer / Rentsign Stages"}, column_values:{status:null}},
-  {name:"Included in The Vine Newsletter", group:{title:"Combined Offer / Rentsign Stages"}, column_values:{status:null}},
-  {name:"Blog post", group:{title:"Combined Offer / Rentsign Stages"}, column_values:{status:null}},
-  {name:"Social Post", group:{title:"Combined Offer / Rentsign Stages"}, column_values:{status:null}},
-  {name:"Update existing web page", group:{title:"Combined Offer / Rentsign Stages"}, column_values:{status:null}},
-  {name:"GTM Campaign & Positioning Brief", group:{title:"PM Mobile App  Maintenance Estimates"}, column_values:{status:null}},
-  {name:"Included in The Vine Newsletter", group:{title:"PM Mobile App  Maintenance Estimates"}, column_values:{status:null}},
-  {name:"Blog post", group:{title:"PM Mobile App  Maintenance Estimates"}, column_values:{status:null}},
-  {name:"Social Post", group:{title:"PM Mobile App  Maintenance Estimates"}, column_values:{status:null}},
-  {name:"Update existing web page", group:{title:"PM Mobile App  Maintenance Estimates"}, column_values:{status:null}},
-  {name:"GTM Campaign & Positioning Brief", group:{title:"Positive Credit Reporting"}, column_values:{status:null}},
-  {name:"Included in The Vine Newsletter", group:{title:"Positive Credit Reporting"}, column_values:{status:null}},
-  {name:"Blog post", group:{title:"Positive Credit Reporting"}, column_values:{status:null}},
-  {name:"Social Post", group:{title:"Positive Credit Reporting"}, column_values:{status:null}},
-  {name:"Update existing web page", group:{title:"Positive Credit Reporting"}, column_values:{status:null}},
-  {name:"GTM Campaign & Positioning Brief", group:{title:"Speed to Lead"}, column_values:{status:null}},
-  {name:"Included in The Vine Newsletter", group:{title:"Speed to Lead"}, column_values:{status:null}},
-  {name:"Blog post", group:{title:"Speed to Lead"}, column_values:{status:null}},
-  {name:"Social Post", group:{title:"Speed to Lead"}, column_values:{status:null}},
-  {name:"Update existing web page", group:{title:"Speed to Lead"}, column_values:{status:null}},
+  {name:"GTM Campaign & Positioning Brief", group:{title:"CRM (Owner Lead Portal)"}, column_values:{status:"Not Started"}},
+  {name:"Included in The Vine Newsletter", group:{title:"CRM (Owner Lead Portal)"}, column_values:{status:"Not Started"}},
+  {name:"Blog post", group:{title:"CRM (Owner Lead Portal)"}, column_values:{status:"Not Started"}},
+  {name:"Social post", group:{title:"CRM (Owner Lead Portal)"}, column_values:{status:"Not Started"}},
+  {name:"Add new web page or update existing", group:{title:"CRM (Owner Lead Portal)"}, column_values:{status:"Not Started"}},
+  {name:"GTM Campaign & Positioning Brief", group:{title:"Custom Scoring Matrix"}, column_values:{status:"In progress"}},
+  {name:"Included in The Vine Newsletter", group:{title:"Custom Scoring Matrix"}, column_values:{status:"In progress"}},
+  {name:"Blog post", group:{title:"Custom Scoring Matrix"}, column_values:{status:"Not Started"}},
+  {name:"Social post", group:{title:"Custom Scoring Matrix"}, column_values:{status:"In progress"}},
+  {name:"Add new web page or update existing", group:{title:"Custom Scoring Matrix"}, column_values:{status:"Not Started"}},
+  {name:"GTM Campaign & Positioning Brief", group:{title:"Combined Offer / Rentsign Stages"}, column_values:{status:"Not Started"}},
+  {name:"Included in The Vine Newsletter", group:{title:"Combined Offer / Rentsign Stages"}, column_values:{status:"Not Started"}},
+  {name:"Blog post", group:{title:"Combined Offer / Rentsign Stages"}, column_values:{status:"Not Started"}},
+  {name:"Social Post", group:{title:"Combined Offer / Rentsign Stages"}, column_values:{status:"Not Started"}},
+  {name:"Update existing web page", group:{title:"Combined Offer / Rentsign Stages"}, column_values:{status:"Not Started"}},
+  {name:"GTM Campaign & Positioning Brief", group:{title:"PM Mobile App  Maintenance Estimates"}, column_values:{status:"Not Started"}},
+  {name:"Included in The Vine Newsletter", group:{title:"PM Mobile App  Maintenance Estimates"}, column_values:{status:"Not Started"}},
+  {name:"Blog post", group:{title:"PM Mobile App  Maintenance Estimates"}, column_values:{status:"Not Started"}},
+  {name:"Social Post", group:{title:"PM Mobile App  Maintenance Estimates"}, column_values:{status:"Not Started"}},
+  {name:"Update existing web page", group:{title:"PM Mobile App  Maintenance Estimates"}, column_values:{status:"Not Started"}},
+  {name:"GTM Campaign & Positioning Brief", group:{title:"Positive Credit Reporting"}, column_values:{status:"Not Started"}},
+  {name:"Included in The Vine Newsletter", group:{title:"Positive Credit Reporting"}, column_values:{status:"Not Started"}},
+  {name:"Blog post", group:{title:"Positive Credit Reporting"}, column_values:{status:"Not Started"}},
+  {name:"Social Post", group:{title:"Positive Credit Reporting"}, column_values:{status:"Not Started"}},
+  {name:"Update existing web page", group:{title:"Positive Credit Reporting"}, column_values:{status:"Not Started"}},
+  {name:"GTM Campaign & Positioning Brief", group:{title:"Speed to Lead"}, column_values:{status:"Not Started"}},
+  {name:"Included in The Vine Newsletter", group:{title:"Speed to Lead"}, column_values:{status:"Not Started"}},
+  {name:"Blog post", group:{title:"Speed to Lead"}, column_values:{status:"Not Started"}},
+  {name:"Social Post", group:{title:"Speed to Lead"}, column_values:{status:"Not Started"}},
+  {name:"Update existing web page", group:{title:"Speed to Lead"}, column_values:{status:"Not Started"}},
 ];
 
 const TIER3_ITEMS = [
@@ -669,6 +749,79 @@ const EMAIL_ITEMS = [
   {name:"The Grow Report - October", group:{title:"Upcoming Campaigns"}, column_values:{status__1:"PMW", status_12:"PMW Current Customer", date:"2026-10-24", date_mks7mh1r:null, dropdown_mm1cac03:"The Grow Report '26", status8:null}},
   {name:"The Grow Report - November", group:{title:"Upcoming Campaigns"}, column_values:{status__1:"PMW", status_12:"PMW Current Customer", date:"2026-11-28", date_mks7mh1r:null, dropdown_mm1cac03:"The Grow Report '26", status8:null}},
   {name:"The Grow Report - December", group:{title:"Upcoming Campaigns"}, column_values:{status__1:"PMW", status_12:"PMW Current Customer", date:"2026-12-19", date_mks7mh1r:null, dropdown_mm1cac03:"The Grow Report '26", status8:null}},
+];
+
+const REVIEWS_ITEMS = [
+  {name:"Anonymous", group:{title:"Rentvine Reviews"}, column_values:{dropdown_mm27kdnd:"G2", text_mm44dq1f:"Stress-free property management with stellar support", date_mm27ht0n:"2026-04-18", numeric_mm27hbf:null, numeric_mm277e5m:"10", text_mm2727mw:"Unknown", text_mm277yy4:"Unknown"}},
+  {name:"Bhing R.", group:{title:"Rentvine Reviews"}, column_values:{dropdown_mm27kdnd:"G2", text_mm44dq1f:"The maintenance dashboard lets you see everything at a glance — work orders, budgets, average days to close.", date_mm27ht0n:"2026-04-17", numeric_mm27hbf:null, numeric_mm277e5m:"10", text_mm2727mw:"Heart Property Management", text_mm277yy4:"TX"}},
+  {name:"Anonymous", group:{title:"Rentvine Reviews"}, column_values:{dropdown_mm27kdnd:"G2", text_mm44dq1f:"Friendly UI that makes finding what you need easy", date_mm27ht0n:"2026-04-17", numeric_mm27hbf:null, numeric_mm277e5m:"9", text_mm2727mw:"Unknown", text_mm277yy4:"Unknown"}},
+  {name:"Aura Cruz", group:{title:"Rentvine Reviews"}, column_values:{dropdown_mm27kdnd:"Google", text_mm44dq1f:null, date_mm27ht0n:"2026-04-16 12:44", numeric_mm27hbf:"5", numeric_mm277e5m:null, text_mm2727mw:null, text_mm277yy4:"CO"}},
+  {name:"Chris M.", group:{title:"Rentvine Reviews"}, column_values:{dropdown_mm27kdnd:"G2", text_mm44dq1f:"It customization capabilities and integrations with apps like Zinspector help save us time and energy.", date_mm27ht0n:"2026-04-16", numeric_mm27hbf:null, numeric_mm277e5m:"10", text_mm2727mw:"Unknown", text_mm277yy4:"Unknown"}},
+  {name:"Anonymous", group:{title:"Rentvine Reviews"}, column_values:{dropdown_mm27kdnd:"G2", text_mm44dq1f:"Rentvine is a one-stop shop — their bookkeeping team saves time and their customer service makes you feel like they genuinely want to see you succeed.", date_mm27ht0n:"2026-04-15", numeric_mm27hbf:null, numeric_mm277e5m:"10", text_mm2727mw:"Unknown", text_mm277yy4:"Unknown"}},
+  {name:"jk Rn - vendor", group:{title:"Rentvine Reviews"}, column_values:{dropdown_mm27kdnd:"Google", text_mm44dq1f:null, date_mm27ht0n:"2026-04-14 18:17", numeric_mm27hbf:"1", numeric_mm277e5m:null, text_mm2727mw:"N/A", text_mm277yy4:"N/a"}},
+  {name:"Anonymous", group:{title:"Rentvine Reviews"}, column_values:{dropdown_mm27kdnd:"G2", text_mm44dq1f:"I find Rentvine very intuitive to use. It's capable of handling all aspects of the property management process.", date_mm27ht0n:"2026-04-14", numeric_mm27hbf:null, numeric_mm277e5m:"10", text_mm2727mw:"Unknown", text_mm277yy4:"Unknown"}},
+  {name:"Sharon D.", group:{title:"Rentvine Reviews"}, column_values:{dropdown_mm27kdnd:"G2", text_mm44dq1f:"Using Rentvine has cut daily tasks in half — easy process for recording rents, paying vendors and owners, and managing work orders.", date_mm27ht0n:"2026-04-14", numeric_mm27hbf:null, numeric_mm277e5m:"10", text_mm2727mw:"Jennic Property Solutions", text_mm277yy4:"NC"}},
+  {name:"Stoney White", group:{title:"Rentvine Reviews"}, column_values:{dropdown_mm27kdnd:"Google", text_mm44dq1f:null, date_mm27ht0n:"2026-04-13 15:33", numeric_mm27hbf:"5", numeric_mm277e5m:null, text_mm2727mw:null, text_mm277yy4:"NY"}},
+  {name:"Jakob H.", group:{title:"Rentvine Reviews"}, column_values:{dropdown_mm27kdnd:"Capterra", text_mm44dq1f:null, date_mm27ht0n:"2026-04-13", numeric_mm27hbf:null, numeric_mm277e5m:null, text_mm2727mw:"Unknown", text_mm277yy4:"Unknown"}},
+  {name:"Steve Peters", group:{title:"Rentvine Reviews"}, column_values:{dropdown_mm27kdnd:"Google", text_mm44dq1f:null, date_mm27ht0n:"2026-04-11 12:05", numeric_mm27hbf:"1", numeric_mm277e5m:null, text_mm2727mw:"N/A", text_mm277yy4:"N/A"}},
+  {name:"Anonymous", group:{title:"Rentvine Reviews"}, column_values:{dropdown_mm27kdnd:"G2", text_mm44dq1f:"The platform guides you through complex property management tasks — it's not just a tool, it's a trusted partner.", date_mm27ht0n:"2026-04-10", numeric_mm27hbf:null, numeric_mm277e5m:"10", text_mm2727mw:"Unknown", text_mm277yy4:"Unknown"}},
+  {name:"Teresa J.", group:{title:"Rentvine Reviews"}, column_values:{dropdown_mm27kdnd:"G2", text_mm44dq1f:"The quick customer service is amazing — the system is user-friendly and easy to use.", date_mm27ht0n:"2026-04-10", numeric_mm27hbf:null, numeric_mm277e5m:"10", text_mm2727mw:"Vital Property Management", text_mm277yy4:"NV"}},
+  {name:"Darren Brown", group:{title:"Rentvine Reviews"}, column_values:{dropdown_mm27kdnd:"Google", text_mm44dq1f:null, date_mm27ht0n:"2026-04-09 13:56", numeric_mm27hbf:"5", numeric_mm277e5m:null, text_mm2727mw:"Reliance1 Realty", text_mm277yy4:"KY"}},
+  {name:"Sandra PYLE", group:{title:"Rentvine Reviews"}, column_values:{dropdown_mm27kdnd:"Google", text_mm44dq1f:null, date_mm27ht0n:"2026-04-08 17:50", numeric_mm27hbf:"5", numeric_mm277e5m:null, text_mm2727mw:"Cactus Property Management", text_mm277yy4:"AZ"}},
+  {name:"Jared Congemi", group:{title:"Rentvine Reviews"}, column_values:{dropdown_mm27kdnd:"Google", text_mm44dq1f:null, date_mm27ht0n:"2026-04-08 13:00", numeric_mm27hbf:"5", numeric_mm277e5m:null, text_mm2727mw:null, text_mm277yy4:null}},
+  {name:"Alan C.", group:{title:"Rentvine Reviews"}, column_values:{dropdown_mm27kdnd:"G2", text_mm44dq1f:"The portal experience for both owners and tenants is clean — communication, statements, and workflows all in one place.", date_mm27ht0n:"2026-04-08", numeric_mm27hbf:null, numeric_mm277e5m:"9", text_mm2727mw:"Unknown", text_mm277yy4:"Unknown"}},
+  {name:"Sandra P.", group:{title:"Rentvine Reviews"}, column_values:{dropdown_mm27kdnd:"G2", text_mm44dq1f:"Helpful Rentvine team and great support throughout", date_mm27ht0n:"2026-04-08", numeric_mm27hbf:null, numeric_mm277e5m:"9", text_mm2727mw:"Cactus Property Management", text_mm277yy4:"AZ"}},
+  {name:"Sue G.", group:{title:"Rentvine Reviews"}, column_values:{dropdown_mm27kdnd:"G2", text_mm44dq1f:"The support feature with videos and step-by-step directions is very helpful — I can rely on Rentvine every time.", date_mm27ht0n:"2026-04-02", numeric_mm27hbf:null, numeric_mm277e5m:"9", text_mm2727mw:"PMI GA", text_mm277yy4:"GA"}},
+  {name:"curtis roddy", group:{title:"Rentvine Reviews"}, column_values:{dropdown_mm27kdnd:"Google", text_mm44dq1f:null, date_mm27ht0n:"2026-03-23 13:08", numeric_mm27hbf:"5", numeric_mm277e5m:null, text_mm2727mw:"Roddy Real Estate", text_mm277yy4:"TX"}},
+  {name:"Chuente Avila", group:{title:"Rentvine Reviews"}, column_values:{dropdown_mm27kdnd:"Google", text_mm44dq1f:null, date_mm27ht0n:"2026-04-21 11:04", numeric_mm27hbf:"5", numeric_mm277e5m:null, text_mm2727mw:"Kai Vista Realty", text_mm277yy4:"FL"}},
+  {name:"Ben Workinger", group:{title:"Rentvine Reviews"}, column_values:{dropdown_mm27kdnd:"Google", text_mm44dq1f:null, date_mm27ht0n:"2026-04-22 18:30", numeric_mm27hbf:"5", numeric_mm277e5m:null, text_mm2727mw:"PMW W Properties", text_mm277yy4:"TX"}},
+  {name:"Diana Morton", group:{title:"Rentvine Reviews"}, column_values:{dropdown_mm27kdnd:"Google", text_mm44dq1f:null, date_mm27ht0n:"2026-04-23 11:24", numeric_mm27hbf:"5", numeric_mm277e5m:null, text_mm2727mw:"Southern Roots Rentals and Sales", text_mm277yy4:"NC"}},
+  {name:"Eric B.", group:{title:"Rentvine Reviews"}, column_values:{dropdown_mm27kdnd:"G2", text_mm44dq1f:"Rentvine keeps work order communication and documentation organized — the easiest platform we've worked with as vendors.", date_mm27ht0n:"2026-04-24", numeric_mm27hbf:null, numeric_mm277e5m:"10", text_mm2727mw:"1st Stop Roofing", text_mm277yy4:"NC"}},
+  {name:"Anonymous", group:{title:"Rentvine Reviews"}, column_values:{dropdown_mm27kdnd:"G2", text_mm44dq1f:"I like how Rentvine is user friendly and their support team is super speedy on getting back to you with resolutions.", date_mm27ht0n:"2026-04-26", numeric_mm27hbf:null, numeric_mm277e5m:"10", text_mm2727mw:"Unknown", text_mm277yy4:"Unknown"}},
+  {name:"Morty McKay", group:{title:"Rentvine Reviews"}, column_values:{dropdown_mm27kdnd:"Google", text_mm44dq1f:null, date_mm27ht0n:"2026-04-29 14:46", numeric_mm27hbf:"5", numeric_mm277e5m:null, text_mm2727mw:"PMI Keystone Tulsa", text_mm277yy4:"OK"}},
+  {name:"Saadia Garcia", group:{title:"Rentvine Reviews"}, column_values:{dropdown_mm27kdnd:"Google", text_mm44dq1f:null, date_mm27ht0n:"2026-04-30 18:56", numeric_mm27hbf:"5", numeric_mm277e5m:null, text_mm2727mw:"Nestwell Property Management", text_mm277yy4:"UT"}},
+  {name:"Trina N", group:{title:"Rentvine Reviews"}, column_values:{dropdown_mm27kdnd:"G2", text_mm44dq1f:"Everything you need is right on the dashboard — super easy to use.", date_mm27ht0n:"2026-04-30", numeric_mm27hbf:null, numeric_mm277e5m:"10", text_mm2727mw:"Unknown", text_mm277yy4:"Unknown"}},
+  {name:"Melissa Simmons", group:{title:"Rentvine Reviews"}, column_values:{dropdown_mm27kdnd:"G2", text_mm44dq1f:"It gets our clients and vendors their money typically in 1-2 business days — owners and vendors are a lot happier since we can process payments much more quickly.", date_mm27ht0n:"2026-04-30", numeric_mm27hbf:null, numeric_mm277e5m:"7", text_mm2727mw:"PMW Greater", text_mm277yy4:"PA"}},
+  {name:"David Gutierrez", group:{title:"Rentvine Reviews"}, column_values:{dropdown_mm27kdnd:"G2", text_mm44dq1f:"Rentvine keeps communication organized and everyone involved can see what's posted — no more back-and-forth emails.", date_mm27ht0n:"2026-05-01", numeric_mm27hbf:null, numeric_mm277e5m:"10", text_mm2727mw:"Unknown", text_mm277yy4:"Unknown"}},
+  {name:"Shawn Torgeson", group:{title:"Rentvine Reviews"}, column_values:{dropdown_mm27kdnd:"G2", text_mm44dq1f:"Much more modernized than software I used for the past twelve years — the staff took the time to truly train us.", date_mm27ht0n:"2026-05-01", numeric_mm27hbf:null, numeric_mm277e5m:"10", text_mm2727mw:"Iron Valley Real Estate", text_mm277yy4:"FL"}},
+  {name:"Anonymous", group:{title:"Rentvine Reviews"}, column_values:{dropdown_mm27kdnd:"G2", text_mm44dq1f:"Easy to use with great marketing integration — everything stays on one platform.", date_mm27ht0n:"2026-05-05", numeric_mm27hbf:null, numeric_mm277e5m:"8", text_mm2727mw:"unknown", text_mm277yy4:"Unknown"}},
+  {name:"Jenny Tempiln", group:{title:"Rentvine Reviews"}, column_values:{dropdown_mm27kdnd:"G2", text_mm44dq1f:"Rentvine's support team responds like they work right in your own office — fast, helpful, and never judgmental.", date_mm27ht0n:"2026-05-06", numeric_mm27hbf:null, numeric_mm277e5m:"10", text_mm2727mw:"Choice Home Rental", text_mm277yy4:"unknown"}},
+  {name:"Peter Asimakis", group:{title:"Rentvine Reviews"}, column_values:{dropdown_mm27kdnd:"G2", text_mm44dq1f:"Rentvine is absolutely wonderful. Their software and account support is great — our account reps are quick and responsive.", date_mm27ht0n:"2026-05-06", numeric_mm27hbf:null, numeric_mm277e5m:"10", text_mm2727mw:"KPM Core Services, LLC", text_mm277yy4:"NY"}},
+  {name:"Natalia Cuartas", group:{title:"Rentvine Reviews"}, column_values:{dropdown_mm27kdnd:"G2", text_mm44dq1f:"I like how efficient and user-friendly Rentvine is. The search bar has all the important information at hand, and the customer service support is super fast at problem solving.", date_mm27ht0n:"2026-05-06", numeric_mm27hbf:null, numeric_mm277e5m:"10", text_mm2727mw:"Dream Big Property Management", text_mm277yy4:"CA/SoCal"}},
+  {name:"Laura Schaefer Taylor", group:{title:"Rentvine Reviews"}, column_values:{dropdown_mm27kdnd:"G2", text_mm44dq1f:"The best part of Rentvine is their support team — they get back to you like they work right in your own office. They respond pretty much immediately and teach you in a way you understand.", date_mm27ht0n:"2026-05-06", numeric_mm27hbf:null, numeric_mm277e5m:"8", text_mm2727mw:"Osto Property Manangement", text_mm277yy4:"FL"}},
+  {name:"Sissy Meyer", group:{title:"Rentvine Reviews"}, column_values:{dropdown_mm27kdnd:"Google", text_mm44dq1f:null, date_mm27ht0n:"2026-05-13 16:52", numeric_mm27hbf:"5", numeric_mm277e5m:null, text_mm2727mw:"Terra Ralty", text_mm277yy4:"TX"}},
+  {name:"Jesse Santos", group:{title:"Rentvine Reviews"}, column_values:{dropdown_mm27kdnd:"G2", text_mm44dq1f:"Seamless property management with a user-friendly interface that makes navigation and statements easy for everyone.", date_mm27ht0n:"2026-05-18", numeric_mm27hbf:null, numeric_mm277e5m:"10", text_mm2727mw:"All Property Management & Sales Inc", text_mm277yy4:"TX"}},
+  {name:"Phil Lehman", group:{title:"Rentvine Reviews"}, column_values:{dropdown_mm27kdnd:"G2", text_mm44dq1f:"The software keeps getting new features and it feels state-of-the-art. Tech support is awesome and responds quickly with screenshots and step-by-step instructions.", date_mm27ht0n:"2026-05-19", numeric_mm27hbf:null, numeric_mm277e5m:"10", text_mm2727mw:"Hometown Property Management", text_mm277yy4:"PA"}},
+  {name:"Wendy Almand", group:{title:"Rentvine Reviews"}, column_values:{dropdown_mm27kdnd:"Google", text_mm44dq1f:null, date_mm27ht0n:"2026-05-20 12:54", numeric_mm27hbf:"5", numeric_mm277e5m:null, text_mm2727mw:"Soto Property Management", text_mm277yy4:"MO"}},
+  {name:"Michelle Grohe", group:{title:"Rentvine Reviews"}, column_values:{dropdown_mm27kdnd:"G2", text_mm44dq1f:"The team's support is incredible — fast responses and accurate fixes. They genuinely welcome feedback and are quick to respond to what users need.", date_mm27ht0n:"2026-05-24", numeric_mm27hbf:null, numeric_mm277e5m:"10", text_mm2727mw:"Real True PM", text_mm277yy4:"VA"}},
+  {name:"Anonymous", group:{title:"Rentvine Reviews"}, column_values:{dropdown_mm27kdnd:"G2", text_mm44dq1f:"Rentvine includes features we previously relied on third-party applications for, which has helped save us money and simplify our processes.", date_mm27ht0n:"2026-05-30", numeric_mm27hbf:null, numeric_mm277e5m:"10", text_mm2727mw:"unknown", text_mm277yy4:"Unknown"}},
+  {name:"Cynthia Landin (SkyBlue Property Manager)", group:{title:"Rentvine Reviews"}, column_values:{dropdown_mm27kdnd:"Google", text_mm44dq1f:null, date_mm27ht0n:"2026-06-04 18:25", numeric_mm27hbf:"5", numeric_mm277e5m:null, text_mm2727mw:"Sky Blue Property Managment", text_mm277yy4:"TX"}},
+  {name:"Anonymous", group:{title:"Rentvine Reviews"}, column_values:{dropdown_mm27kdnd:"G2", text_mm44dq1f:"The accounting side of the software is exceptional. I can track every dollar that comes in and out of the system, down to the cent.", date_mm27ht0n:"2026-06-02", numeric_mm27hbf:null, numeric_mm277e5m:"8", text_mm2727mw:"unknown", text_mm277yy4:"unknown"}},
+  {name:"Coleen Bradley", group:{title:"Rentvine Reviews"}, column_values:{dropdown_mm27kdnd:"G2", text_mm44dq1f:"Easy, convenient, and the auto-generated signatures let me complete documents in a timely fashion — saving me time and gas.", date_mm27ht0n:"2026-06-03", numeric_mm27hbf:null, numeric_mm277e5m:"10", text_mm2727mw:"tenant", text_mm277yy4:"tenant"}},
+  {name:"Antonio Bonadie", group:{title:"Rentvine Reviews"}, column_values:{dropdown_mm27kdnd:"Google", text_mm44dq1f:null, date_mm27ht0n:"2026-06-11 11:58", numeric_mm27hbf:"1", numeric_mm277e5m:null, text_mm2727mw:"Unknown", text_mm277yy4:"Unknown"}},
+  {name:"Anonymous", group:{title:"Rentvine Reviews"}, column_values:{dropdown_mm27kdnd:"G2", text_mm44dq1f:"I like that Rentvine is very customizable and adaptable to the specific needs of a property management company. I get a response within thirty minutes to an hour whenever I submit a ticket.", date_mm27ht0n:"2026-06-09", numeric_mm27hbf:null, numeric_mm277e5m:"9", text_mm2727mw:"Unknown", text_mm277yy4:"Unknown"}},
+  {name:"Katy Collette", group:{title:"Rentvine Reviews"}, column_values:{dropdown_mm27kdnd:"G2", text_mm44dq1f:"It is user friendly and the staff is helpful.", date_mm27ht0n:"2026-06-09", numeric_mm27hbf:null, numeric_mm277e5m:"10", text_mm2727mw:"Twins Property Management", text_mm277yy4:"TX"}},
+  {name:"Anonymous", group:{title:"Rentvine Reviews"}, column_values:{dropdown_mm27kdnd:"G2", text_mm44dq1f:"The PMW / Rentvine team has been highly responsive and has been a great strategy partner throughout the process.", date_mm27ht0n:"2026-06-12", numeric_mm27hbf:null, numeric_mm277e5m:"10", text_mm2727mw:"Pristine Bay", text_mm277yy4:"FL"}},
+  {name:"Dan Pinette", group:{title:"Rentvine Reviews"}, column_values:{dropdown_mm27kdnd:"Google", text_mm44dq1f:null, date_mm27ht0n:"2026-06-17 17:13", numeric_mm27hbf:"1", numeric_mm277e5m:null, text_mm2727mw:null, text_mm277yy4:null}},
+  {name:"Jon Bradfield", group:{title:"Rentvine Reviews"}, column_values:{dropdown_mm27kdnd:"Google", text_mm44dq1f:null, date_mm27ht0n:"2026-06-18 18:14", numeric_mm27hbf:"5", numeric_mm277e5m:null, text_mm2727mw:null, text_mm277yy4:null}},
+  {name:"Anonymous", group:{title:"Rentvine Reviews"}, column_values:{dropdown_mm27kdnd:"G2", text_mm44dq1f:"I really like Rentvine's ease of use. The support team is great, the initial setup was very easy, and it keeps us organized with capital management, billing, and maintenance.", date_mm27ht0n:"2026-06-17", numeric_mm27hbf:null, numeric_mm277e5m:"10", text_mm2727mw:"Unknown", text_mm277yy4:"Unknown"}},
+  {name:"Amy B", group:{title:"Rentvine Reviews"}, column_values:{dropdown_mm27kdnd:"Google", text_mm44dq1f:null, date_mm27ht0n:"2026-06-26 10:56", numeric_mm27hbf:"5", numeric_mm277e5m:null, text_mm2727mw:null, text_mm277yy4:null}},
+  {name:"Cynthia L", group:{title:"Rentvine Reviews"}, column_values:{dropdown_mm27kdnd:"G2", text_mm44dq1f:"I really appreciate that Rentvine was clearly built with the property manager's day-to-day operations in mind. The system effectively brings together accounting, leasing, maintenance, communications, and workflows all in one system.", date_mm27ht0n:"2026-06-26", numeric_mm27hbf:null, numeric_mm277e5m:"10", text_mm2727mw:null, text_mm277yy4:null}},
+  {name:"Sal B", group:{title:"Rentvine Reviews"}, column_values:{dropdown_mm27kdnd:"G2", text_mm44dq1f:"I like their Open API, especially now with AI. Being able to build our own dashboards and reporting makes a big difference, and having an API available to us is great.", date_mm27ht0n:"2026-06-27", numeric_mm27hbf:null, numeric_mm277e5m:"10", text_mm2727mw:null, text_mm277yy4:null}},
+  {name:"DWC Property", group:{title:"Rentvine Reviews"}, column_values:{dropdown_mm27kdnd:"Google", text_mm44dq1f:null, date_mm27ht0n:"2026-06-29 14:32", numeric_mm27hbf:"5", numeric_mm277e5m:null, text_mm2727mw:null, text_mm277yy4:null}},
+  {name:"Craig Caffarello", group:{title:"Rentvine Reviews"}, column_values:{dropdown_mm27kdnd:"G2", text_mm44dq1f:"The use of AI integration is really fun to watch and Rentvine is making daily improvements to the software.", date_mm27ht0n:"2026-07-05", numeric_mm27hbf:null, numeric_mm277e5m:"10", text_mm2727mw:"Your Place Property Management", text_mm277yy4:"IL"}},
+  {name:"Tony Lane", group:{title:"Rentvine Reviews"}, column_values:{dropdown_mm27kdnd:"Google", text_mm44dq1f:null, date_mm27ht0n:"2026-07-07 12:53", numeric_mm27hbf:"5", numeric_mm277e5m:null, text_mm2727mw:null, text_mm277yy4:null}},
+  {name:"Chris Reagan", group:{title:"Rentvine Reviews"}, column_values:{dropdown_mm27kdnd:"G2", text_mm44dq1f:"Rentvine has been a fantastic resource for us, handling all of our maintenance requests, accounting, tenant portals, and lease signing all in one place... The transition to Rentvine was wonderful, largely due to their impressive customer service and user-friendly interface, which made even complex tasks simple.", date_mm27ht0n:"2026-07-08", numeric_mm27hbf:null, numeric_mm277e5m:"10", text_mm2727mw:"Elevate Properties", text_mm277yy4:"NC"}},
+  {name:"Anonymous", group:{title:"Rentvine Reviews"}, column_values:{dropdown_mm27kdnd:"G2", text_mm44dq1f:"Easily communicating to owners about statements", date_mm27ht0n:"2026-07-09", numeric_mm27hbf:null, numeric_mm277e5m:"10", text_mm2727mw:"Unknown", text_mm277yy4:"Unknown"}},
+  {name:"Jesse Sutton", group:{title:"PMW Reviews"}, column_values:{dropdown_mm27kdnd:"Google", text_mm44dq1f:null, date_mm27ht0n:"2026-04-09 14:02", numeric_mm27hbf:"5", numeric_mm277e5m:null, text_mm2727mw:null, text_mm277yy4:null}},
+  {name:"Jessica Phillips", group:{title:"PMW Reviews"}, column_values:{dropdown_mm27kdnd:"Google", text_mm44dq1f:null, date_mm27ht0n:"2026-03-30 09:56", numeric_mm27hbf:"5", numeric_mm277e5m:null, text_mm2727mw:null, text_mm277yy4:null}},
+  {name:"Kyle Isaacs", group:{title:"PMW Reviews"}, column_values:{dropdown_mm27kdnd:"Google", text_mm44dq1f:null, date_mm27ht0n:"2026-02-20 16:16", numeric_mm27hbf:"5", numeric_mm277e5m:null, text_mm2727mw:null, text_mm277yy4:null}},
+  {name:"Danny Ly", group:{title:"PMW Reviews"}, column_values:{dropdown_mm27kdnd:"Google", text_mm44dq1f:null, date_mm27ht0n:"2026-04-29 13:07", numeric_mm27hbf:"5", numeric_mm277e5m:null, text_mm2727mw:null, text_mm277yy4:null}},
+  {name:"RiskCapitalResearch", group:{title:"PMW Reviews"}, column_values:{dropdown_mm27kdnd:"Google", text_mm44dq1f:null, date_mm27ht0n:"2026-04-30 11:32", numeric_mm27hbf:"5", numeric_mm277e5m:null, text_mm2727mw:null, text_mm277yy4:null}},
+  {name:"Allison Ambrose", group:{title:"PMW Reviews"}, column_values:{dropdown_mm27kdnd:"Google", text_mm44dq1f:null, date_mm27ht0n:"2026-05-05 11:13", numeric_mm27hbf:"4", numeric_mm277e5m:null, text_mm2727mw:null, text_mm277yy4:null}},
+  {name:"Alyssa Haberle", group:{title:"PMW Reviews"}, column_values:{dropdown_mm27kdnd:"Google", text_mm44dq1f:null, date_mm27ht0n:"2026-06-01 22:41", numeric_mm27hbf:"5", numeric_mm277e5m:null, text_mm2727mw:null, text_mm277yy4:null}},
+  {name:"Nathan Peel", group:{title:"PMW Reviews"}, column_values:{dropdown_mm27kdnd:"Google", text_mm44dq1f:null, date_mm27ht0n:"2026-06-16 16:30", numeric_mm27hbf:"5", numeric_mm277e5m:null, text_mm2727mw:null, text_mm277yy4:null}},
+  {name:"Ran Fridman", group:{title:"PMW Reviews"}, column_values:{dropdown_mm27kdnd:"Google", text_mm44dq1f:null, date_mm27ht0n:"2026-07-20 09:53", numeric_mm27hbf:"5", numeric_mm277e5m:null, text_mm2727mw:null, text_mm277yy4:null}},
 ];
 
 /* ---- Overview status styling ---- */
@@ -863,6 +1016,7 @@ function groupTier1(items, groupList){
 /* ---- Tier 2 / Tier 3 (no weighting, just status display) ---- */
 const SIMPLE_STATUS_STYLE = {
   'Not started': {bg:'var(--grey)', fg:'#fff'},
+  'Not Started': {bg:'var(--grey)', fg:'#fff'},
   'Launched':    {bg:'var(--vine)', fg:'#fff'},
   'Block':       {bg:'var(--lava)', fg:'#fff'},
   'In progress': {bg:'var(--honey)', fg:'var(--night)'},
@@ -1080,6 +1234,168 @@ function renderCommsKpis(newsletterRows, filteredEmailRows){
     </div>`).join('');
 }
 
+/* ---- Reviews tab ---- */
+const SOURCE_STYLE = {
+  'Google':   {bg:'var(--blue)',  fg:'#fff'},
+  'G2':       {bg:'var(--vine)',  fg:'#fff'},
+  'Capterra': {bg:'var(--grape)', fg:'#fff'},
+};
+function normalizeSource(label){
+  if(!label) return 'Unknown';
+  if(/^g2/i.test(label)) return 'G2';
+  return label;
+}
+function sourcePill(label){
+  const style = SOURCE_STYLE[label] || {bg:'var(--stone)', fg:'#fff'};
+  return `<span class="pill" style="background:${style.bg};color:${style.fg}">${esc(label)}</span>`;
+}
+function cleanField(v){
+  if(v == null) return '—';
+  const s = String(v).replace(/\s*\n\s*/g, ' ').trim();
+  if(!s || /^(unknown|n\/a\.?|na)$/i.test(s)) return '—';
+  return s;
+}
+function ratingDisplay(r){
+  if(r.googleStars != null && r.googleStars !== '') return '★'.repeat(Number(r.googleStars)) + '☆'.repeat(Math.max(0, 5 - Number(r.googleStars)));
+  if(r.g2Rating != null && r.g2Rating !== '') return `${r.g2Rating}/10`;
+  return '—';
+}
+
+function buildReviewRows(items){
+  return items.map(it => {
+    const cv = it.column_values || {};
+    return {
+      group: (it.group && it.group.title) || '',
+      reviewer: it.name,
+      source: normalizeSource(cv.dropdown_mm27kdnd),
+      highlight: cv.text_mm44dq1f || '',
+      date: cv.date_mm27ht0n ? cv.date_mm27ht0n.slice(0,10) : null,
+      googleStars: cv.numeric_mm27hbf,
+      g2Rating: cv.numeric_mm277e5m,
+      company: cleanField(cv.text_mm2727mw),
+      territory: cleanField(cv.text_mm277yy4),
+    };
+  });
+}
+
+let reviewsAll = [];
+const reviewsFilter = { rentvine: 'All', pmw: 'All' };
+const reviewsSort = { rentvine: {key:'date', asc:false}, pmw: {key:'date', asc:false} };
+const reviewsCollapsed = { rentvine: true, pmw: true };
+const REVIEWS_VISIBLE_COUNT = 5;
+
+function reviewRowHtml(r){
+  return `
+      <tr>
+        <td>${sourcePill(r.source)}</td>
+        <td class="item-name">${esc(r.reviewer)}</td>
+        <td>${ratingDisplay(r)}</td>
+        <td>${esc(r.highlight || '—')}</td>
+        <td>${esc(r.company)}</td>
+        <td>${esc(r.territory)}</td>
+        <td>${formatDate(r.date)}</td>
+      </tr>`;
+}
+
+function renderReviewsSection(sectionKey, groupTitle, bodyId, filterContainerId, subId, toggleId, extraBodyId){
+  const rows = reviewsAll.filter(r => r.group === groupTitle);
+  const sources = ['All', ...new Set(rows.map(r => r.source))];
+  const activeFilter = reviewsFilter[sectionKey];
+  document.getElementById(filterContainerId).innerHTML = sources.map(s =>
+    `<button class="filter-btn ${s===activeFilter?'active':''}" data-source="${esc(s)}">${esc(s)}</button>`
+  ).join('');
+  document.querySelectorAll('#'+filterContainerId+' .filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      reviewsFilter[sectionKey] = btn.dataset.source;
+      renderReviewsSection(sectionKey, groupTitle, bodyId, filterContainerId, subId, toggleId, extraBodyId);
+    });
+  });
+  let filtered = activeFilter === 'All' ? rows.slice() : rows.filter(r => r.source === activeFilter);
+  const sort = reviewsSort[sectionKey];
+  filtered.sort((a,b) => {
+    let av = a[sort.key], bv = b[sort.key];
+    if(av == null && bv == null) return 0;
+    if(av == null) return 1;
+    if(bv == null) return -1;
+    if(av < bv) return sort.asc ? -1 : 1;
+    if(av > bv) return sort.asc ? 1 : -1;
+    return 0;
+  });
+  const body = document.getElementById(bodyId);
+  const extraBody = document.getElementById(extraBodyId);
+  if(filtered.length === 0){
+    body.innerHTML = `<tr><td colspan="7" class="empty-state">No reviews match this filter.</td></tr>`;
+    extraBody.innerHTML = '';
+  } else {
+    const visible = filtered.slice(0, REVIEWS_VISIBLE_COUNT);
+    const rest = filtered.slice(REVIEWS_VISIBLE_COUNT);
+    body.innerHTML = visible.map(reviewRowHtml).join('');
+    extraBody.innerHTML = rest.map(reviewRowHtml).join('');
+  }
+  if(subId){
+    document.getElementById(subId).textContent = `${rows.length} review${rows.length===1?'':'s'}`;
+  }
+  if(toggleId && extraBodyId){
+    updateReviewsToggle({sectionKey, groupTitle, toggleId, extraBodyId}, Math.max(0, filtered.length - REVIEWS_VISIBLE_COUNT));
+  }
+}
+
+const REVIEWS_SECTIONS = [
+  {sectionKey:'rentvine', groupTitle:'Rentvine Reviews', bodyId:'reviewsRentvineBody', filterContainerId:'reviewsRentvineFilters', subId:'reviewsRentvineSub', toggleId:'reviewsRentvineToggle', extraBodyId:'reviewsRentvineExtraBody'},
+  {sectionKey:'pmw', groupTitle:'PMW Reviews', bodyId:'reviewsPmwBody', filterContainerId:'reviewsPmwFilters', subId:'reviewsPmwSub', toggleId:'reviewsPmwToggle', extraBodyId:'reviewsPmwExtraBody'},
+];
+
+function updateReviewsToggle(cfg, extraCount){
+  const collapsed = reviewsCollapsed[cfg.sectionKey];
+  const btn = document.getElementById(cfg.toggleId);
+  document.getElementById(cfg.extraBodyId).classList.toggle('collapsed', collapsed);
+  if(extraCount == null){
+    const rows = reviewsAll.filter(r => r.group === cfg.groupTitle);
+    const activeFilter = reviewsFilter[cfg.sectionKey];
+    const filteredCount = activeFilter === 'All' ? rows.length : rows.filter(r => r.source === activeFilter).length;
+    extraCount = Math.max(0, filteredCount - REVIEWS_VISIBLE_COUNT);
+  }
+  if(extraCount <= 0){
+    btn.style.display = 'none';
+  } else {
+    btn.style.display = '';
+    btn.textContent = collapsed ? `Show ${extraCount} more review${extraCount===1?'':'s'}` : 'Show fewer reviews';
+  }
+}
+
+REVIEWS_SECTIONS.forEach(cfg => {
+  document.querySelectorAll('#'+cfg.bodyId.replace('Body','Table')+' thead th').forEach(th => {
+    th.addEventListener('click', () => {
+      const key = th.dataset.key;
+      const sort = reviewsSort[cfg.sectionKey];
+      if(sort.key === key){ sort.asc = !sort.asc; } else { sort.key = key; sort.asc = true; }
+      renderReviewsSection(cfg.sectionKey, cfg.groupTitle, cfg.bodyId, cfg.filterContainerId, cfg.subId, cfg.toggleId, cfg.extraBodyId);
+    });
+  });
+  document.getElementById(cfg.toggleId).addEventListener('click', () => {
+    reviewsCollapsed[cfg.sectionKey] = !reviewsCollapsed[cfg.sectionKey];
+    updateReviewsToggle(cfg);
+  });
+});
+
+function renderReviewsKpis(){
+  const rentvineCount = reviewsAll.filter(r => r.group === 'Rentvine Reviews').length;
+  const pmwCount = reviewsAll.filter(r => r.group === 'PMW Reviews').length;
+  const g2Vals = reviewsAll.filter(r => r.g2Rating != null && r.g2Rating !== '').map(r => Number(r.g2Rating));
+  const avgG2 = g2Vals.length ? (g2Vals.reduce((a,b)=>a+b,0) / g2Vals.length).toFixed(1) : '—';
+  const kpis = [
+    {num: reviewsAll.length, label:'Total reviews tracked', cls:'blue'},
+    {num: rentvineCount, label:'Rentvine reviews', cls:'vine'},
+    {num: pmwCount, label:'PMW reviews', cls:'grape'},
+    {num: avgG2, label:'Average G2 rating (out of 10)', cls:''},
+  ];
+  document.getElementById('reviewsKpiRow').innerHTML = kpis.map(k => `
+    <div class="kpi ${k.cls}">
+      <div class="num">${k.num}</div>
+      <div class="label">${k.label}</div>
+    </div>`).join('');
+}
+
 /* ---- Tab switching ---- */
 document.querySelectorAll('.tab-btn').forEach(btn => {
   btn.addEventListener('click', () => {
@@ -1148,6 +1464,13 @@ function renderAll(){
     `${emailRows.length} upcoming sends targeting current customers &middot; <a class="board-link" href="${boardUrl(EMAIL_BOARD)}" target="_blank">open board in monday.com &rarr;</a>`;
 
   renderCommsKpis(newsletterRows, emailRows);
+
+  // Reviews
+  reviewsAll = buildReviewRows(REVIEWS_ITEMS);
+  REVIEWS_SECTIONS.forEach(cfg => {
+    renderReviewsSection(cfg.sectionKey, cfg.groupTitle, cfg.bodyId, cfg.filterContainerId, cfg.subId, cfg.toggleId, cfg.extraBodyId);
+  });
+  renderReviewsKpis();
 }
 
 renderAll();
